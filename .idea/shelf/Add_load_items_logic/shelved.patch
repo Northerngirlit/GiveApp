@@ -1,0 +1,291 @@
+Index: app/src/main/java/com/truecaller/giveapp/presenter/ItemManager.kt
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/presenter/ItemManager.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
++++ app/src/main/java/com/truecaller/giveapp/presenter/ItemManager.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
+@@ -1,45 +0,0 @@
+-package com.truecaller.giveapp.presenter
+-
+-import com.truecaller.giveapp.model.Item
+-import com.truecaller.giveapp.model.api.ItemRepository
+-import com.truecaller.giveapp.utils.CONTEXT_BG
+-import com.truecaller.giveapp.utils.CONTEXT_UI
+-import dagger.Lazy
+-import kotlinx.coroutines.experimental.launch
+-import kotlinx.coroutines.experimental.withContext
+-import javax.inject.Inject
+-import javax.inject.Named
+-import kotlin.coroutines.experimental.CoroutineContext
+-
+-class ItemManager @Inject constructor(
+-    private val itemRepository: ItemRepository,
+-    @Named(CONTEXT_UI) private val uiCoroutineContext: CoroutineContext,
+-    @Named(CONTEXT_BG) private val bgCoroutineContext: CoroutineContext,
+-    private val onItemCallbackRef: Lazy<OnItemCallback>
+-) {
+-
+-    fun loadItems() {
+-        launch(uiCoroutineContext) {
+-            val items: List<Item> = withContext(bgCoroutineContext) {
+-                itemRepository.getItems()
+-            }
+-            onItemCallbackRef.get().onItemsLoaded(items)
+-        }
+-    }
+-
+-    fun addItem(item: Item) {
+-        launch(uiCoroutineContext) {
+-            withContext(bgCoroutineContext) {
+-                itemRepository.saveItem(item)
+-            }
+-            onItemCallbackRef.get().onItemAdded()
+-        }
+-    }
+-
+-}
+-
+-interface OnItemCallback {
+-    fun onItemsLoaded(items: List<Item>)
+-
+-    fun onItemAdded()
+-}
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/view/ItemListFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.view\n\nimport android.os.Bundle\nimport android.support.v4.app.Fragment\nimport android.view.LayoutInflater\nimport android.view.View\nimport android.view.ViewGroup\nimport android.widget.Toast\nimport com.truecaller.giveapp.App\nimport com.truecaller.giveapp.R\nimport com.truecaller.giveapp.model.Item\nimport com.truecaller.giveapp.presenter.ItemListPresenter\nimport javax.inject.Inject\n\nclass ItemListFragment: Fragment(), ItemListView {\n\n    @Inject\n    lateinit var presenter: ItemListPresenter\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        App.component.inject(this);\n        super.onCreate(savedInstanceState)\n        presenter.onAttachView(this)\n    }\n\n    override fun onDetach() {\n        super.onDetach()\n        presenter.onDetachView()\n    }\n\n    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {\n        return inflater.inflate(R.layout.fragment_item_list, container, false)\n    }\n\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\n        super.onViewCreated(view, savedInstanceState)\n        view.findViewById<View>(R.id.add).setOnClickListener { presenter.addItem() }\n    }\n\n    override fun showItemList(itemList: List<Item>) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    override fun showProgress(show: Boolean) {\n        Toast.makeText(context, \"Progress $show\", Toast.LENGTH_SHORT).show()\n    }\n\n    override fun showError() {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/view/ItemListFragment.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
++++ app/src/main/java/com/truecaller/giveapp/view/ItemListFragment.kt	(date 1540038442000)
+@@ -38,14 +38,14 @@
+     }
+ 
+     override fun showItemList(itemList: List<Item>) {
+-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
++        Toast.makeText(context, "Items loaded ${itemList.size}", Toast.LENGTH_SHORT).show()
+     }
+ 
+     override fun showProgress(show: Boolean) {
+         Toast.makeText(context, "Progress $show", Toast.LENGTH_SHORT).show()
+     }
+ 
+-    override fun showError() {
++    override fun showError(message: String) {
+         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+     }
+ 
+Index: app/src/main/java/com/truecaller/giveapp/view/ItemListView.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.view\n\nimport com.truecaller.giveapp.model.Item\n\ninterface ItemListView {\n    fun showItemList(itemList: List<Item>)\n    fun showProgress(show: Boolean)\n    fun showError()\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/view/ItemListView.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
++++ app/src/main/java/com/truecaller/giveapp/view/ItemListView.kt	(date 1540031879000)
+@@ -5,5 +5,5 @@
+ interface ItemListView {
+     fun showItemList(itemList: List<Item>)
+     fun showProgress(show: Boolean)
+-    fun showError()
++    fun showError(errorMessage: String)
+ }
+Index: app/src/main/java/com/truecaller/giveapp/model/api/ItemRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.model.api\n\nimport com.google.firebase.database.DatabaseReference\nimport com.google.firebase.database.FirebaseDatabase\nimport com.truecaller.giveapp.model.Item\nimport javax.inject.Inject\n\nconst val ITEMS_CHILD = \"items\"\n\nclass ItemRepository @Inject constructor() {\n\n    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()\n    private val itemDatabaseRef: DatabaseReference = database.reference\n\n    fun getItems(): List<Item> {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    fun saveItem(item: Item) {\n        itemDatabaseRef.child(ITEMS_CHILD).push().setValue(item)\n    }\n\n    fun updateItem(item: Item) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    fun deleteItem(item: Item) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/model/api/ItemRepository.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
++++ app/src/main/java/com/truecaller/giveapp/model/api/ItemRepository.kt	(date 1540038663000)
+@@ -1,7 +1,6 @@
+ package com.truecaller.giveapp.model.api
+ 
+-import com.google.firebase.database.DatabaseReference
+-import com.google.firebase.database.FirebaseDatabase
++import com.google.firebase.database.*
+ import com.truecaller.giveapp.model.Item
+ import javax.inject.Inject
+ 
+@@ -9,15 +8,27 @@
+ 
+ class ItemRepository @Inject constructor() {
+ 
++    var itemEventEventCallback: OnItemEventCallback? = null
++
+     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+-    private val itemDatabaseRef: DatabaseReference = database.reference
++    private val itemDatabaseRef: DatabaseReference = database.reference.child(ITEMS_CHILD)
+ 
+-    fun getItems(): List<Item> {
+-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
++    fun loadItems() {
++        itemDatabaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
++            override fun onDataChange(dataSnapshot: DataSnapshot) {
++                val items = dataSnapshot.children.mapNotNull { it.getValue(Item::class.java) }
++                itemEventEventCallback?.onItemListLoaded(items)
++            }
++
++            override fun onCancelled(databaseError: DatabaseError) {
++                itemEventEventCallback?.onItemEventError(databaseError.message)
++            }
++        })
+     }
+ 
+     fun saveItem(item: Item) {
+         itemDatabaseRef.child(ITEMS_CHILD).push().setValue(item)
++            .addOnFailureListener { itemEventEventCallback?.onItemEventError("Error while adding new item") }
+     }
+ 
+     fun updateItem(item: Item) {
+@@ -29,3 +40,11 @@
+     }
+ 
+ }
++
++interface OnItemEventCallback {
++    fun onItemAdded(item: Item)
++
++    fun onItemListLoaded(itemList: List<Item>)
++
++    fun onItemEventError(errorMessage: String)
++}
+Index: app/src/main/java/com/truecaller/giveapp/model/Item.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.model\n\nimport java.util.concurrent.TimeUnit\n\nclass Item {\n    var title: String = \"\"\n    var description: String = \"\"\n    var logo: String = \"\"\n    var category: String = \"\"\n    var lifetime: Long = TimeUnit.DAYS.toMillis(1)\n    var latutude: Double = 0.0\n    var longitude: Double = 0.0\n    var phone: String = \"\"\n    var address: String = \"\"\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/model/Item.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
++++ app/src/main/java/com/truecaller/giveapp/model/Item.kt	(date 1540032522000)
+@@ -1,8 +1,12 @@
+ package com.truecaller.giveapp.model
+ 
++import com.google.firebase.database.Exclude
++import com.google.firebase.database.IgnoreExtraProperties
+ import java.util.concurrent.TimeUnit
+ 
++@IgnoreExtraProperties
+ class Item {
++    var id: String = ""
+     var title: String = ""
+     var description: String = ""
+     var logo: String = ""
+@@ -12,4 +16,19 @@
+     var longitude: Double = 0.0
+     var phone: String = ""
+     var address: String = ""
++
++    @Exclude
++    fun toMap(): Map<String, Any> {
++        return hashMapOf(
++            "title" to title,
++            "description" to description,
++            "logo" to logo,
++            "category" to category,
++            "lifetime" to lifetime,
++            "latutude" to latutude,
++            "longitude" to longitude,
++            "phone" to phone,
++            "address" to address
++        ).toMap()
++    }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/presenter/ItemListPresenter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.presenter\n\nimport com.truecaller.giveapp.model.Item\nimport com.truecaller.giveapp.view.ItemListView\nimport javax.inject.Inject\n\nclass ItemListPresenter @Inject constructor(\n    private val itemManager: ItemManager\n) : BasePresenter<ItemListView>(), OnItemCallback {\n\n    fun loadItems() {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    override fun onItemAdded() {\n        view?.showProgress(false)\n    }\n\n    override fun onItemsLoaded(items: List<Item>) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    fun addItem() {\n        val item = Item()\n        item.title = \"Cheese\"\n        item.description = \"Gauda cheese for free.\"\n        itemManager.addItem(item)\n        view?.showProgress(true)\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/presenter/ItemListPresenter.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
++++ app/src/main/java/com/truecaller/giveapp/presenter/ItemListPresenter.kt	(date 1540038076000)
+@@ -1,30 +1,36 @@
+ package com.truecaller.giveapp.presenter
+ 
+ import com.truecaller.giveapp.model.Item
++import com.truecaller.giveapp.model.api.ItemRepository
++import com.truecaller.giveapp.model.api.OnItemEventCallback
+ import com.truecaller.giveapp.view.ItemListView
+ import javax.inject.Inject
+ 
+ class ItemListPresenter @Inject constructor(
+-    private val itemManager: ItemManager
+-) : BasePresenter<ItemListView>(), OnItemCallback {
++    private val itemRepository: ItemRepository
++) : BasePresenter<ItemListView>(), OnItemEventCallback {
+ 
+-    fun loadItems() {
+-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
++    override fun onItemListLoaded(itemList: List<Item>) {
++        view?.showItemList(itemList)
+     }
+ 
+-    override fun onItemAdded() {
++    override fun onItemAdded(item: Item) {
+         view?.showProgress(false)
+     }
+ 
+-    override fun onItemsLoaded(items: List<Item>) {
+-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
++    override fun onItemEventError(errorMessage: String) {
++        view?.showError(errorMessage)
++    }
++
++    fun loadItems() {
++        itemRepository.loadItems()
+     }
+ 
+     fun addItem() {
+         val item = Item()
+         item.title = "Cheese"
+         item.description = "Gauda cheese for free."
+-        itemManager.addItem(item)
++        itemRepository.saveItem(item)
+         view?.showProgress(true)
+     }
+ 
+Index: app/src/main/java/com/truecaller/giveapp/AppModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp\n\nimport com.truecaller.giveapp.presenter.ItemListPresenter\nimport com.truecaller.giveapp.presenter.OnItemCallback\nimport com.truecaller.giveapp.utils.CONTEXT_BG\nimport com.truecaller.giveapp.utils.CONTEXT_UI\nimport dagger.Binds\nimport dagger.Module\nimport dagger.Provides\nimport kotlinx.coroutines.experimental.Dispatchers\nimport javax.inject.Named\nimport kotlin.coroutines.experimental.CoroutineContext\n\n@Module(includes = [AppModule.Declarations::class])\nclass AppModule {\n\n    @Provides\n    @Named(CONTEXT_UI)\n    fun uiCoroutineContext(): CoroutineContext = Dispatchers.Main\n\n    @Provides\n    @Named(CONTEXT_BG)\n    fun asyncCoroutineContext(): CoroutineContext = Dispatchers.Default\n\n    @Module\n    interface Declarations {\n        @Binds\n        fun onItemCallback(impl: ItemListPresenter): OnItemCallback\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/AppModule.kt	(revision d9580cf900547432ecd1a1ae6f3f86d89194b7c7)
++++ app/src/main/java/com/truecaller/giveapp/AppModule.kt	(date 1540038442000)
+@@ -1,17 +1,14 @@
+ package com.truecaller.giveapp
+ 
+-import com.truecaller.giveapp.presenter.ItemListPresenter
+-import com.truecaller.giveapp.presenter.OnItemCallback
+ import com.truecaller.giveapp.utils.CONTEXT_BG
+ import com.truecaller.giveapp.utils.CONTEXT_UI
+-import dagger.Binds
+ import dagger.Module
+ import dagger.Provides
+ import kotlinx.coroutines.experimental.Dispatchers
+ import javax.inject.Named
+ import kotlin.coroutines.experimental.CoroutineContext
+ 
+-@Module(includes = [AppModule.Declarations::class])
++@Module
+ class AppModule {
+ 
+     @Provides
+@@ -22,10 +19,4 @@
+     @Named(CONTEXT_BG)
+     fun asyncCoroutineContext(): CoroutineContext = Dispatchers.Default
+ 
+-    @Module
+-    interface Declarations {
+-        @Binds
+-        fun onItemCallback(impl: ItemListPresenter): OnItemCallback
+-    }
+-
+ }
+\ No newline at end of file

@@ -58,6 +58,7 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun showItemList(itemList: List<Item>) {
         setUpRecyclerView(itemList as ArrayList<Item>)
+        Toast.makeText(context, "Items loaded ${itemList.size}", Toast.LENGTH_SHORT).show()
     }
 
     override fun showProgress(show: Boolean) {
@@ -68,8 +69,8 @@ class ItemListFragment : Fragment(), ItemListView {
         }
     }
 
-    override fun showError(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    override fun showError(errorMessage: String) {
+        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDetach() {
