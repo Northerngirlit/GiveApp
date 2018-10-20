@@ -1,30 +1,43 @@
 package com.truecaller.giveapp.presenter
 
 import com.truecaller.giveapp.model.Item
+import com.truecaller.giveapp.model.api.ItemRepository
+import com.truecaller.giveapp.model.api.OnItemEventCallback
 import com.truecaller.giveapp.view.ItemListView
 import javax.inject.Inject
 
 class ItemListPresenter @Inject constructor(
-    private val itemManager: ItemManager
-) : BasePresenter<ItemListView>(), OnItemCallback {
+    private val itemRepository: ItemRepository
+) : BasePresenter<ItemListView>(), OnItemEventCallback {
 
-    fun loadItems() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    init {
+        itemRepository.itemEventEventCallback = this
     }
 
-    override fun onItemAdded() {
+    override fun onItemListLoaded(itemList: List<Item>) {
+        view?.showProgress(false)
+        view?.showItemList(itemList)
+    }
+
+    override fun onItemAdded(item: Item) {
         view?.showProgress(false)
     }
 
-    override fun onItemsLoaded(items: List<Item>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onItemEventError(errorMessage: String) {
+        view?.showProgress(false)
+        view?.showError(errorMessage)
+    }
+
+    fun loadItems() {
+        view?.showProgress(true)
+        itemRepository.loadItems()
     }
 
     fun addItem() {
         val item = Item()
         item.title = "Cheese"
         item.description = "Gauda cheese for free."
-        itemManager.addItem(item)
+        itemRepository.saveItem(item)
         view?.showProgress(true)
     }
 

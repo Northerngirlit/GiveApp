@@ -5,5 +5,5 @@ import com.truecaller.giveapp.model.Item
 interface ItemListView {
     fun showItemList(itemList: List<Item>)
     fun showProgress(show: Boolean)
-    fun showError()
+    fun showError(errorMessage: String)
 }
