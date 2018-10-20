@@ -34,7 +34,7 @@ class ItemListFragment : Fragment(), ItemListView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fabAddItem.setOnClickListener { presenter.addItem() }
+        fabAddItem.setOnClickListener { openAddActivity() }
 
         presenter.loadItems()
 
@@ -61,7 +61,7 @@ class ItemListFragment : Fragment(), ItemListView {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
-    override fun openAddActivity() {
+    private fun openAddActivity() {
         val intent = Intent(context, AddActivity::class.java)
         startActivity(intent)
     }

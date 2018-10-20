@@ -35,14 +35,10 @@ class ItemListPresenter @Inject constructor(
     }
 
     fun addItem() {
-       view?.openAddActivity()
-
-
-//        val item = Item()
-//        item.title = "Cheese"
-//        item.description = "Gauda cheese for free."
-//        itemRepository.saveItem(item)
-//        view?.showProgress(true)
+        val item = Item()
+        item.title = "Cheese"
+        item.description = "Gauda cheese for free."
+        itemRepository.saveItem(item)
+        view?.showProgress(true)
     }
-
 }
