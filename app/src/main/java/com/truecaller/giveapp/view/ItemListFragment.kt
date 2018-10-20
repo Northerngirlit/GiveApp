@@ -38,14 +38,14 @@ class ItemListFragment: Fragment(), ItemListView {
     }
 
     override fun showItemList(itemList: List<Item>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(context, "Items loaded ${itemList.size}", Toast.LENGTH_SHORT).show()
     }
 
     override fun showProgress(show: Boolean) {
         Toast.makeText(context, "Progress $show", Toast.LENGTH_SHORT).show()
     }
 
-    override fun showError() {
+    override fun showError(message: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
