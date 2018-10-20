@@ -1,5 +1,6 @@
 package com.truecaller.giveapp.presenter
 
+import android.content.Intent
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.model.api.ItemRepository
 import com.truecaller.giveapp.model.api.OnItemEventCallback
@@ -34,11 +35,14 @@ class ItemListPresenter @Inject constructor(
     }
 
     fun addItem() {
-        val item = Item()
-        item.title = "Cheese"
-        item.description = "Gauda cheese for free."
-        itemRepository.saveItem(item)
-        view?.showProgress(true)
+       view?.openAddActivity()
+
+
+//        val item = Item()
+//        item.title = "Cheese"
+//        item.description = "Gauda cheese for free."
+//        itemRepository.saveItem(item)
+//        view?.showProgress(true)
     }
 
 }

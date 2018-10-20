@@ -35,7 +35,7 @@ class ItemListAdapter(private val items: ArrayList<Item>, private val listener: 
 
         fun bind(item: Item, listener: (Item) -> Unit) = with(itemView) {
             title.text = item.title
-            thumbnail.loadUrl(item.logo)//TODO load thumbnail
+            thumbnail.loadUrl(item.picture)//TODO load thumbnail
 
             setOnClickListener { listener(item) }
         }

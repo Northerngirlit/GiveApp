@@ -1,11 +1,13 @@
 package com.truecaller.giveapp.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.truecaller.giveapp.AddActivity
 import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
@@ -35,6 +37,7 @@ class ItemListFragment : Fragment(), ItemListView {
         fabAddItem.setOnClickListener { presenter.addItem() }
 
         presenter.loadItems()
+
     }
 
     private fun setUpRecyclerView(items: ArrayList<Item>) {
@@ -58,6 +61,11 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun showError(errorMessage: String) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun openAddActivity() {
+        val intent = Intent(context, AddActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onDetach() {
