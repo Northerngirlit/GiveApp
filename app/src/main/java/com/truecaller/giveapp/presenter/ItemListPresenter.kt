@@ -10,6 +10,10 @@ class ItemListPresenter @Inject constructor(
     private val itemRepository: ItemRepository
 ) : BasePresenter<ItemListView>(), OnItemEventCallback {
 
+    init {
+        itemRepository.itemEventEventCallback = this
+    }
+
     override fun onItemListLoaded(itemList: List<Item>) {
         view?.showItemList(itemList)
     }

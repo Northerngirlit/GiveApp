@@ -34,7 +34,7 @@ class ItemListFragment: Fragment(), ItemListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<View>(R.id.add).setOnClickListener { presenter.addItem() }
+        view.findViewById<View>(R.id.add).setOnClickListener { presenter.loadItems() }
     }
 
     override fun showItemList(itemList: List<Item>) {
