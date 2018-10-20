@@ -1,33 +1,34 @@
-package com.truecaller.giveapp.model.api
+package com.truecaller.giveapp.model
 
 import com.google.firebase.database.*
-import com.truecaller.giveapp.model.Item
-import dagger.Lazy
+import com.truecaller.giveapp.presenter.OnItemAddCallback
+import com.truecaller.giveapp.presenter.OnItemLoadCallback
 import javax.inject.Inject
 
 const val ITEMS_CHILD = "items"
 
-class ItemRepository @Inject constructor(val callback: Lazy<OnItemEventCallback>) {
+class ItemRepository @Inject constructor() {
 
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val itemDatabaseRef: DatabaseReference = database.reference.child(ITEMS_CHILD)
 
-    fun loadItems() {
+    fun loadItems(callback: OnItemLoadCallback) {
         itemDatabaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val items = dataSnapshot.children.mapNotNull { it.getValue(Item::class.java) }
-                callback.get().onItemListLoaded(items)
+                callback.onItemListLoaded(items)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                callback.get().onItemEventError(databaseError.message)
+                callback.onItemEventError(databaseError.message)
             }
         })
     }
 
-    fun saveItem(item: Item) {
+    fun saveItem(item: Item, callback: OnItemAddCallback) {
         itemDatabaseRef.push().setValue(item)
-            .addOnFailureListener { callback.get().onItemEventError("Error while adding new item") }
+            .addOnSuccessListener { callback.onItemAdded() }
+            .addOnFailureListener { callback.onItemEventError("Error while adding new item") }
     }
 
     fun updateItem(item: Item) {
