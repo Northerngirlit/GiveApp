@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1098852828810",
+    "firebase_url": "https://giveapp-truecaller.firebaseio.com",
+    "project_id": "giveapp-truecaller",
+    "storage_bucket": "giveapp-truecaller.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098852828810:android:3f8ff69e947bc853",
+        "android_client_info": {
+          "package_name": "com.truecaller.giveapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098852828810-nqh8soud8mk4t8ito5ccb668b5o6t45m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.truecaller.giveapp",
+            "certificate_hash": "da02816f1de51d06ed355a0819a516d8cc0a22f5"
+          }
+        },
+        {
+          "client_id": "1098852828810-i7jlav1pent69vp9s8thlr1ijojv7hmh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmOEfN6qZQOtWx1J8Hu-K4n1w4bwlybWM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1098852828810-i7jlav1pent69vp9s8thlr1ijojv7hmh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
