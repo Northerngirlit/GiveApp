@@ -27,7 +27,7 @@ class ItemRepository @Inject constructor() {
     }
 
     fun saveItem(item: Item) {
-        itemDatabaseRef.child(ITEMS_CHILD).push().setValue(item)
+        itemDatabaseRef.push().setValue(item)
             .addOnFailureListener { itemEventEventCallback?.onItemEventError("Error while adding new item") }
     }
 
