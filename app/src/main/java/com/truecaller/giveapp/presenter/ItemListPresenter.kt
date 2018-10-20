@@ -6,14 +6,12 @@ import com.truecaller.giveapp.model.api.ItemRepository
 import com.truecaller.giveapp.model.api.OnItemEventCallback
 import com.truecaller.giveapp.view.ItemListView
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ItemListPresenter @Inject constructor(
     private val itemRepository: ItemRepository
 ) : BasePresenter<ItemListView>(), OnItemEventCallback {
-
-    init {
-        itemRepository.itemEventEventCallback = this
-    }
 
     override fun onItemListLoaded(itemList: List<Item>) {
         view?.showProgress(false)
@@ -35,10 +33,6 @@ class ItemListPresenter @Inject constructor(
     }
 
     fun addItem() {
-        val item = Item()
-        item.title = "Cheese"
-        item.description = "Gauda cheese for free."
-        itemRepository.saveItem(item)
-        view?.showProgress(true)
+        //open screen
     }
 }
