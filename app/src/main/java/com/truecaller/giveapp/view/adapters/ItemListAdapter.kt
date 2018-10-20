@@ -36,7 +36,7 @@ class ItemListAdapter(private val items: ArrayList<Item>) :
         fun bind(item: Item) {
             itemView.title.text = item.title
 
-            itemView.thumbnail.loadUrl(item.logo)//TODO load thumbnail
+            itemView.thumbnail.loadUrl(item.picture)//TODO load thumbnail
         }
 
 

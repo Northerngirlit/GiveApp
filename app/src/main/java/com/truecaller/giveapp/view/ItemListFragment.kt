@@ -37,6 +37,7 @@ class ItemListFragment : Fragment(), ItemListView {
         fabAddItem.setOnClickListener { presenter.addItem() }
 
         presenter.loadItems()
+
     }
 
     private fun setUpRecyclerView(items: ArrayList<Item>) {
@@ -58,6 +59,11 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun showError(errorMessage: String) {
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun openAddActivity() {
+        val intent = Intent(context, AddActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onDetach() {
