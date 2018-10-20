@@ -21,7 +21,7 @@ class ItemListPresenter @Inject constructor(
     }
 
     fun addItem() {
-        val item = Item()
+        val item = Item("Cheese")
         item.title = "Cheese"
         item.description = "Gauda cheese for free."
         itemManager.addItem(item)

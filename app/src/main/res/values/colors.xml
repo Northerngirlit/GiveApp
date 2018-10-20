@@ -3,4 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+
+    <!--Fonts-->
+    <color name="font_primary">#de000000</color> <!--Black 0.87 alpha -->
+    <color name="font_secondary">#8a000000</color> <!--Black 0.54 alpha -->
+
 </resources>

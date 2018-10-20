@@ -1,11 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent">
-    <Button
-            android:text="ADD"
-            android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:background="@android:color/white"
+        android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvItems"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/row_item"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="@dimen/progress_size"
+            android:layout_height="@dimen/progress_size"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabAddItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_normal"
+            android:src="@android:drawable/ic_input_add"
+            android:tint="@android:color/white"
+            app:fabSize="normal"
+            app:layout_anchor="@id/rvItems"
+            app:layout_anchorGravity="bottom|end"/>
+
+</android.support.design.widget.CoordinatorLayout>

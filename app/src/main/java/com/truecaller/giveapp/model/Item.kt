@@ -12,4 +12,8 @@ class Item {
     var longitude: Double = 0.0
     var phone: String = ""
     var address: String = ""
+
+    constructor(name: String) { //Temporary constructor for testing purposes TODO remove
+        title = name
+    }
 }

@@ -10,22 +10,19 @@ import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.presenter.ItemListPresenter
+import com.truecaller.giveapp.view.adapters.ItemListAdapter
+import kotlinx.android.synthetic.main.fragment_item_list.*
 import javax.inject.Inject
 
-class ItemListFragment: Fragment(), ItemListView {
+class ItemListFragment : Fragment(), ItemListView {
 
     @Inject
     lateinit var presenter: ItemListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        App.component.inject(this);
+        App.component.inject(this)
         super.onCreate(savedInstanceState)
         presenter.onAttachView(this)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        presenter.onDetachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,19 +31,49 @@ class ItemListFragment: Fragment(), ItemListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<View>(R.id.add).setOnClickListener { presenter.addItem() }
+
+        fabAddItem.setOnClickListener { presenter.addItem() }
+
+        showItemList(addTempItems())
+    }
+
+    private fun setUpRecyclerView(items: ArrayList<Item>) {
+        rvItems.adapter = ItemListAdapter(items)
+    }
+
+    /**
+     * TODO Remove later (only for testing)
+     */
+    private fun addTempItems(): List<Item> {
+        val items: ArrayList<Item> = ArrayList()
+        items.add(Item("Cheese"))
+        items.add(Item("Pasta"))
+        items.add(Item("Coffee"))
+        items.add(Item("Rice"))
+        items.add(Item("Butter"))
+        items.add(Item("Chicken"))
+        items.add(Item("Beef"))
+        return items
     }
 
     override fun showItemList(itemList: List<Item>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        setUpRecyclerView(itemList as ArrayList<Item>)
     }
 
     override fun showProgress(show: Boolean) {
-        Toast.makeText(context, "Progress $show", Toast.LENGTH_SHORT).show()
+        progressBar.visibility = if (show) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 
-    override fun showError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        presenter.onDetachView()
+    }
 }
