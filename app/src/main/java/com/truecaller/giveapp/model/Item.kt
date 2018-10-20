@@ -17,10 +17,6 @@ class Item {
     var phone: String = ""
     var address: String = ""
 
-    constructor(name: String) { //Temporary constructor for testing purposes TODO remove
-        title = name
-    }
-
     @Exclude
     fun toMap(): Map<String, Any> {
         return hashMapOf(

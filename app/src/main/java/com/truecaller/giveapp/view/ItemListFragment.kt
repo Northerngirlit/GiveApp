@@ -34,26 +34,11 @@ class ItemListFragment : Fragment(), ItemListView {
 
         fabAddItem.setOnClickListener { presenter.addItem() }
 
-        showItemList(addTempItems())
+        presenter.loadItems()
     }
 
     private fun setUpRecyclerView(items: ArrayList<Item>) {
         rvItems.adapter = ItemListAdapter(items)
-    }
-
-    /**
-     * TODO Remove later (only for testing)
-     */
-    private fun addTempItems(): List<Item> {
-        val items: ArrayList<Item> = ArrayList()
-        items.add(Item("Cheese"))
-        items.add(Item("Pasta"))
-        items.add(Item("Coffee"))
-        items.add(Item("Rice"))
-        items.add(Item("Butter"))
-        items.add(Item("Chicken"))
-        items.add(Item("Beef"))
-        return items
     }
 
     override fun showItemList(itemList: List<Item>) {

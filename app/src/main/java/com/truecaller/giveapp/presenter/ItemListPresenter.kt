@@ -11,6 +11,7 @@ class ItemListPresenter @Inject constructor(
 ) : BasePresenter<ItemListView>(), OnItemEventCallback {
 
     override fun onItemListLoaded(itemList: List<Item>) {
+        view?.showProgress(false)
         view?.showItemList(itemList)
     }
 
@@ -19,15 +20,17 @@ class ItemListPresenter @Inject constructor(
     }
 
     override fun onItemEventError(errorMessage: String) {
+        view?.showProgress(false)
         view?.showError(errorMessage)
     }
 
     fun loadItems() {
+        view?.showProgress(true)
         itemRepository.loadItems()
     }
 
     fun addItem() {
-        val item = Item("Cheese")
+        val item = Item()
         item.title = "Cheese"
         item.description = "Gauda cheese for free."
         itemRepository.saveItem(item)
