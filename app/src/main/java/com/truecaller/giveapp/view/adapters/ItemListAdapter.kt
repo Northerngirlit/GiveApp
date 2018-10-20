@@ -10,7 +10,7 @@ import com.truecaller.giveapp.utils.loadUrl
 import kotlinx.android.synthetic.main.row_item.view.*
 
 
-class ItemListAdapter(private val items: ArrayList<Item>) :
+class ItemListAdapter(private val items: ArrayList<Item>, private val listener: (Item) -> Unit) :
     RecyclerView.Adapter<ItemListAdapter.ItemsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
@@ -18,7 +18,7 @@ class ItemListAdapter(private val items: ArrayList<Item>) :
     }
 
     override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], listener)
     }
 
     override fun getItemCount(): Int {
@@ -33,10 +33,11 @@ class ItemListAdapter(private val items: ArrayList<Item>) :
 
     class ItemsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(item: Item) {
-            itemView.title.text = item.title
+        fun bind(item: Item, listener: (Item) -> Unit) = with(itemView) {
+            title.text = item.title
+            thumbnail.loadUrl(item.logo)//TODO load thumbnail
 
-            itemView.thumbnail.loadUrl(item.logo)//TODO load thumbnail
+            setOnClickListener { listener(item) }
         }
 
 

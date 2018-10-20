@@ -10,8 +10,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
 
-        supportFragmentManager.beginTransaction()
-            .add(android.R.id.content, ItemListFragment())
-            .commit()
+        savedInstanceState?.let {
+            supportFragmentManager.beginTransaction()
+                .add(android.R.id.content, ItemListFragment())
+                .commit()
+        }
     }
 }

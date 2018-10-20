@@ -24,7 +24,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
                     android:scaleType="fitCenter"
                     tools:src="@tools:sample/avatars"
                     android:src="@drawable/test_image"

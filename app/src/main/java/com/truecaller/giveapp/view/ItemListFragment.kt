@@ -38,12 +38,14 @@ class ItemListFragment : Fragment(), ItemListView {
     }
 
     private fun setUpRecyclerView(items: ArrayList<Item>) {
-        rvItems.adapter = ItemListAdapter(items)
+        rvItems.adapter = ItemListAdapter(items){
+            //Item clicked - open details screen TODO
+            Toast.makeText(context, "${it.title} Clicked", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun showItemList(itemList: List<Item>) {
         setUpRecyclerView(itemList as ArrayList<Item>)
-        Toast.makeText(context, "Items loaded ${itemList.size}", Toast.LENGTH_SHORT).show()
     }
 
     override fun showProgress(show: Boolean) {
