@@ -1,18 +1,20 @@
 package com.truecaller.giveapp.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.truecaller.giveapp.AddActivity
 import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.presenter.ItemListPresenter
 import javax.inject.Inject
 
-class ItemListFragment: Fragment(), ItemListView {
+class ItemListFragment : Fragment(), ItemListView {
 
     @Inject
     lateinit var presenter: ItemListPresenter
@@ -43,6 +45,9 @@ class ItemListFragment: Fragment(), ItemListView {
 
     override fun showProgress(show: Boolean) {
         Toast.makeText(context, "Progress $show", Toast.LENGTH_SHORT).show()
+
+        val intent = Intent(context, AddActivity::class.java)
+        startActivity(intent)
     }
 
     override fun showError() {
