@@ -1,8 +1,10 @@
 package com.truecaller.giveapp.view
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +14,14 @@ import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.presenter.ItemListPresenter
+import com.truecaller.giveapp.utils.configToolbar
 import com.truecaller.giveapp.view.adapters.ItemListAdapter
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import javax.inject.Inject
 
 class ItemListFragment : Fragment(), ItemListView {
+
+    private var listener: OnFragmentInteractionListener? = null
 
     @Inject
     lateinit var presenter: ItemListPresenter
@@ -33,6 +38,7 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).configToolbar(toolbarList, false, getString(R.string.app_name))
 
         fabAddItem.setOnClickListener { presenter.addItem() }
 
@@ -41,9 +47,9 @@ class ItemListFragment : Fragment(), ItemListView {
     }
 
     private fun setUpRecyclerView(items: ArrayList<Item>) {
-        rvItems.adapter = ItemListAdapter(items){
-            //Item clicked - open details screen TODO
-            Toast.makeText(context, "${it.title} Clicked", Toast.LENGTH_SHORT).show()
+        rvItems.adapter = ItemListAdapter(items) {
+            //Item clicked - open details screen
+            listener?.onItemClicked(it)
         }
     }
 
@@ -68,8 +74,21 @@ class ItemListFragment : Fragment(), ItemListView {
         startActivity(intent)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
     override fun onDetach() {
         super.onDetach()
         presenter.onDetachView()
+    }
+
+    interface OnFragmentInteractionListener {
+        fun onItemClicked(item: Item)
     }
 }
