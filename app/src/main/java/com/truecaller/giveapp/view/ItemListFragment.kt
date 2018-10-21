@@ -26,6 +26,11 @@ class ItemListFragment : Fragment(), ItemListView {
         presenter.onAttachView(this)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        presenter.onDetachView()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_item_list, container, false)
     }
@@ -63,10 +68,5 @@ class ItemListFragment : Fragment(), ItemListView {
     private fun openAddActivity() {
         val intent = Intent(context, AddItemActivity::class.java)
         startActivity(intent)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        presenter.onDetachView()
     }
 }

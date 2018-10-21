@@ -18,5 +18,4 @@ class AppModule {
     @Provides
     @Named(CONTEXT_BG)
     fun asyncCoroutineContext(): CoroutineContext = Dispatchers.Default
-
 }
