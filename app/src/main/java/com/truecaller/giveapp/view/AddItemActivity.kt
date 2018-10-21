@@ -1,56 +1,72 @@
 package com.truecaller.giveapp.view
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.Toast
+import com.google.firebase.storage.StorageReference
 import com.truecaller.giveapp.App
+import com.truecaller.giveapp.GlideApp
 import com.truecaller.giveapp.R
-import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.presenter.AddItemPresenter
 import com.truecaller.giveapp.utils.configToolbar
 import kotlinx.android.synthetic.main.activity_add_item.*
 import javax.inject.Inject
 
-class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, AddItemView {
+const val REQUEST_CODE_PHOTO_PICKER = 1
+
+class AddItemActivity : AppCompatActivity(), AddItemView {
 
     @Inject
     lateinit var presenter: AddItemPresenter
 
-    var category: String = ""
     private val listOfSpinnerItems =
-        arrayOf("Not sure", "Food", "Groceries", "Clothes", "Furniture")
+        arrayOf("Not sure", "Vegetables", "Fruits", "Breads", "Meat", "Juice", "Wine", "Beer", "Ice cream", "Candy")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         App.component.inject(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_add_item)
+
         configToolbar(toolbarAddItem, true, getString(R.string.action_add_item))
-        setUpCategorySpinner()
+
+        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOfSpinnerItems)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        categorySpinner.adapter = arrayAdapter
+
+        camera.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/jpeg"
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+            startActivityForResult(Intent.createChooser(intent, "Complete action using"), REQUEST_CODE_PHOTO_PICKER)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_PHOTO_PICKER && resultCode == Activity.RESULT_OK) {
+            val uri: Uri? = data?.data
+            uri?.let {
+                presenter.uploadImage(uri)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onStart() {
+        super.onStart()
         presenter.onAttachView(this)
     }
 
-    private fun setUpCategorySpinner() {
-        val spinner = findViewById<Spinner>(R.id.category_spinner)
-        spinner.onItemSelectedListener = this
-        val arrayAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item, listOfSpinnerItems
-        )
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = arrayAdapter
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        category = listOfSpinnerItems[position]
+    override fun onStop() {
+        super.onStop()
+        presenter.onDetachView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -92,21 +108,12 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
             return
         }
 
-        val item = Item()
-        item.category = category
-        item.title = title
-        item.description = description
-        item.address = itemLocation.text.toString()
-        item.phone = phoneNumber
-        item.email = itemEmail.text.toString()
-        item.lifetime = itemLifeTime.text.toString().toLong()
-        item.creationTimestamp = System.currentTimeMillis()
-        presenter.saveItem(item)
-    }
-
-    override fun onStop() {
-        presenter.onDetachView()
-        super.onStop()
+        val category = listOfSpinnerItems[categorySpinner.selectedItemPosition]
+        val address = itemLocation.text.toString()
+        val email = itemEmail.text.toString()
+        val lifetime = itemLifeTime.text.toString().toLong()
+        val creationTimeStamp = System.currentTimeMillis()
+        presenter.saveItem(category, title, description, address, phoneNumber, email, lifetime, creationTimeStamp)
     }
 
     override fun showProgress(show: Boolean) {
@@ -115,6 +122,20 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         } else {
             View.GONE
         }
+    }
+
+    override fun showError(errorMessage: String) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showFileUploadProgress(progress: Int) {
+        Toast.makeText(this, "Uploading in progress: $progress", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showImage(imageStorageRef: StorageReference) {
+        GlideApp.with(this)
+            .load(imageStorageRef)
+            .into(logo)
     }
 
     override fun finishActivity() {

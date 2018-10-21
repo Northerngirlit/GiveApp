@@ -1,0 +1,347 @@
+Index: app/src/main/java/com/truecaller/giveapp/presenter/AddItemPresenter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.presenter\n\nimport com.truecaller.giveapp.model.Item\nimport com.truecaller.giveapp.model.ItemRepository\nimport com.truecaller.giveapp.view.AddItemView\nimport javax.inject.Inject\n\nclass AddItemPresenter @Inject constructor(\n    private val itemRepository: ItemRepository\n) : BasePresenter<AddItemView>(), OnItemAddCallback {\n    override fun onItemAdded() {\n        view?.showProgress(false)\n    }\n\n    override fun onItemEventError(errorMessage: String) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    fun saveItem(item: Item) {\n        itemRepository.saveItem(item, this)\n        view?.showProgress(true)\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/presenter/AddItemPresenter.kt	(revision 650028ac70f526f6dde28622122b0ac4435797fb)
++++ app/src/main/java/com/truecaller/giveapp/presenter/AddItemPresenter.kt	(date 1540115287000)
+@@ -1,13 +1,30 @@
+ package com.truecaller.giveapp.presenter
+ 
+-import com.truecaller.giveapp.model.Item
+-import com.truecaller.giveapp.model.ItemRepository
++import android.net.Uri
++import com.truecaller.giveapp.model.*
+ import com.truecaller.giveapp.view.AddItemView
+ import javax.inject.Inject
+ 
+ class AddItemPresenter @Inject constructor(
+-    private val itemRepository: ItemRepository
+-) : BasePresenter<AddItemView>(), OnItemAddCallback {
++    private val itemRepository: ItemRepository,
++    private val fileStorage: FileStorage
++) : BasePresenter<AddItemView>(), OnItemAddCallback, OnFileUploadCallback {
++
++    var fileRef: String? = null
++
++    override fun onFileUploaded(fileRef: String) {
++        this.fileRef = fileRef
++        view?.showImage(fileStorage.getDownloadStorageRef(fileRef))
++    }
++
++    override fun onFileUploadProgress(progress: Double) {
++        view?.showFileUploadProgress(progress.toInt())
++    }
++
++    override fun onFileUploadError(errorMessage: String) {
++        view?.showError(errorMessage)
++    }
++
+     override fun onItemAdded() {
+         view?.showProgress(false)
+     }
+@@ -20,4 +37,8 @@
+         itemRepository.saveItem(item, this)
+         view?.showProgress(true)
+     }
++
++    fun uploadImage(uri: Uri) {
++        fileStorage.uploadFile(uri, this)
++    }
+ }
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(date 1540114937000)
++++ .idea/misc.xml	(date 1540114937000)
+@@ -0,0 +1,32 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="NullableNotNullManager">
++    <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
++    <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
++    <option name="myNullables">
++      <value>
++        <list size="7">
++          <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.Nullable" />
++          <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nullable" />
++          <item index="2" class="java.lang.String" itemvalue="javax.annotation.CheckForNull" />
++          <item index="3" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.Nullable" />
++          <item index="4" class="java.lang.String" itemvalue="android.support.annotation.Nullable" />
++          <item index="5" class="java.lang.String" itemvalue="androidx.annotation.Nullable" />
++          <item index="6" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNullable" />
++        </list>
++      </value>
++    </option>
++    <option name="myNotNulls">
++      <value>
++        <list size="6">
++          <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
++          <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
++          <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
++          <item index="3" class="java.lang.String" itemvalue="android.support.annotation.NonNull" />
++          <item index="4" class="java.lang.String" itemvalue="androidx.annotation.NonNull" />
++          <item index="5" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNonNull" />
++        </list>
++      </value>
++    </option>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/codeStyles/Project.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/codeStyles/Project.xml	(date 1540114937000)
++++ .idea/codeStyles/Project.xml	(date 1540114937000)
+@@ -0,0 +1,35 @@
++<component name="ProjectCodeStyleConfiguration">
++  <code_scheme name="Project" version="173">
++    <JetCodeStyleSettings>
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </JetCodeStyleSettings>
++    <Objective-C-extensions>
++      <file>
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Import" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Macro" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Typedef" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Enum" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Constant" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Global" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Struct" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="FunctionPredecl" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Function" />
++      </file>
++      <class>
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Property" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Synthesize" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="InitMethod" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="StaticMethod" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="InstanceMethod" />
++        <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="DeallocMethod" />
++      </class>
++      <extensions>
++        <pair source="cpp" header="h" fileNamingConvention="NONE" />
++        <pair source="c" header="h" fileNamingConvention="NONE" />
++      </extensions>
++    </Objective-C-extensions>
++    <codeStyleSettings language="kotlin">
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </codeStyleSettings>
++  </code_scheme>
++</component>
+\ No newline at end of file
+Index: .idea/codeStyles/codeStyleConfig.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/codeStyles/codeStyleConfig.xml	(date 1540114937000)
++++ .idea/codeStyles/codeStyleConfig.xml	(date 1540114937000)
+@@ -0,0 +1,5 @@
++<component name="ProjectCodeStyleConfiguration">
++  <state>
++    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
++  </state>
++</component>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_add_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<ScrollView\n        xmlns:android=\"http://schemas.android.com/apk/res/android\"\n        xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n        xmlns:tools=\"http://schemas.android.com/tools\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"match_parent\">\n\n    <android.support.constraint.ConstraintLayout\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"match_parent\"\n            android:padding=\"8dp\">\n\n        <android.support.v7.widget.CardView\n                android:id=\"@+id/camera\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"200dp\"\n                android:elevation=\"2dp\"\n                app:layout_constraintTop_toTopOf=\"parent\"\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\">\n            <ImageView\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"50dp\"\n                    android:src=\"@drawable/camera\"\n                    android:layout_gravity=\"center\"/>\n        </android.support.v7.widget.CardView>\n\n        <TextView\n                android:id=\"@+id/category_textView\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                app:layout_constraintStart_toStartOf=\"parent\"\n                android:layout_marginTop=\"16dp\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"\n                android:text=\"@string/category\"\n                app:layout_constraintTop_toBottomOf=\"@+id/camera\"/>\n        <Spinner\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"@+id/category_textView\"\n                android:layout_marginTop=\"8dp\"\n                android:id=\"@+id/category_spinner\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"/>\n\n\n        <android.support.design.widget.TextInputLayout\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                android:id=\"@+id/title\"\n                app:layout_constraintTop_toBottomOf=\"@+id/category_spinner\"\n                style=\"@style/textInputLayoutStyle\">\n            <EditText\n                    style=\"@style/editTextStyle\"\n                    android:hint=\"@string/item_title\"\n                    android:singleLine=\"true\" android:layout_width=\"match_parent\"/>\n        </android.support.design.widget.TextInputLayout>\n\n        <android.support.design.widget.TextInputLayout\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                android:id=\"@+id/description\"\n                app:layout_constraintTop_toBottomOf=\"@+id/title\"\n                style=\"@style/textInputLayoutStyle\">\n            <EditText\n                    style=\"@style/editTextStyle\"\n                    android:hint=\"@string/item_description\"/>\n        </android.support.design.widget.TextInputLayout>\n\n        <android.support.design.widget.TextInputLayout\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                android:id=\"@+id/location\"\n                app:layout_constraintTop_toBottomOf=\"@+id/description\"\n                style=\"@style/textInputLayoutStyle\">\n            <EditText\n                    style=\"@style/editTextStyle\"\n                    android:hint=\"@string/item_location\"/>\n        </android.support.design.widget.TextInputLayout>\n\n        <android.support.design.widget.TextInputLayout\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                android:id=\"@+id/phoneNumber\"\n                app:layout_constraintTop_toBottomOf=\"@+id/location\"\n                style=\"@style/textInputLayoutStyle\">\n            <EditText\n                    style=\"@style/editTextStyle\"\n                    android:hint=\"@string/item_phoneNumber\"/>\n        </android.support.design.widget.TextInputLayout>\n\n        <android.support.design.widget.TextInputLayout\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                android:id=\"@+id/email\"\n                app:layout_constraintTop_toBottomOf=\"@+id/phoneNumber\"\n                style=\"@style/textInputLayoutStyle\">\n            <EditText\n                    style=\"@style/editTextStyle\"\n                    android:hint=\"@string/item_emails\"/>\n        </android.support.design.widget.TextInputLayout>\n\n        <android.support.design.widget.TextInputLayout\n                app:layout_constraintStart_toStartOf=\"parent\"\n                android:id=\"@+id/lifeTime\"\n                app:layout_constraintTop_toBottomOf=\"@+id/email\"\n                style=\"@style/textInputLayoutStyle\"\n                app:layout_constraintEnd_toStartOf=\"@+id/days_textView\">\n            <EditText\n                    style=\"@style/editTextStyle\"\n                    android:hint=\"@string/item_lifeTime\"/>\n        </android.support.design.widget.TextInputLayout>\n        <TextView\n                android:id=\"@+id/days_textView\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                android:layout_marginEnd=\"16dp\"\n                android:layout_width=\"wrap_content\"\n                android:layout_height=\"wrap_content\"\n                android:text=\"@string/DAYS\"\n                app:layout_constraintTop_toTopOf=\"@+id/lifeTime\"\n                app:layout_constraintBottom_toBottomOf=\"@+id/lifeTime\"/>\n\n        <LinearLayout\n                android:layout_width=\"match_parent\"\n                android:layout_height=\"100dp\"\n                android:id=\"@+id/progressDialog\"\n                android:background=\"@color/colorLightOrangeBackground\"\n                app:layout_constraintStart_toStartOf=\"parent\"\n                app:layout_constraintEnd_toEndOf=\"parent\"\n                app:layout_constraintTop_toTopOf=\"parent\"\n                android:visibility=\"gone\"\n                tools:visibility=\"visible\"\n                android:orientation=\"vertical\"\n                app:layout_constraintBottom_toTopOf=\"@+id/email\">\n\n            <TextView android:layout_width=\"match_parent\"\n                      android:layout_height=\"0dp\"\n                      android:text=\"Saving your item...\"\n                      android:gravity=\"center\"\n                      android:layout_weight=\"1\"/>\n\n            <ProgressBar\n                    style=\"?android:attr/progressBarStyleHorizontal\"\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"0dp\"\n                    android:indeterminate=\"true\"\n                    android:layout_gravity=\"center\"\n                    android:layout_weight=\"1\"/>\n        </LinearLayout>\n    </android.support.constraint.ConstraintLayout>\n</ScrollView>\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_add_item.xml	(revision 650028ac70f526f6dde28622122b0ac4435797fb)
++++ app/src/main/res/layout/activity_add_item.xml	(date 1540114937000)
+@@ -8,20 +8,21 @@
+ 
+     <android.support.constraint.ConstraintLayout
+             android:layout_width="match_parent"
+-            android:layout_height="match_parent"
++            android:layout_height="wrap_content"
+             android:padding="8dp">
+ 
+         <android.support.v7.widget.CardView
+                 android:id="@+id/camera"
+-                android:layout_width="0dp"
+-                android:layout_height="200dp"
+-                android:elevation="2dp"
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
+                 app:layout_constraintTop_toTopOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent">
+             <ImageView
+                     android:layout_width="match_parent"
+-                    android:layout_height="50dp"
++                    android:layout_height="48dp"
++                    android:layout_marginTop="@dimen/spacing_large"
++                    android:layout_marginBottom="@dimen/spacing_large"
+                     android:src="@drawable/camera"
+                     android:layout_gravity="center"/>
+         </android.support.v7.widget.CardView>
+@@ -40,16 +41,15 @@
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintTop_toBottomOf="@+id/category_textView"
+                 android:layout_marginTop="8dp"
+-                android:id="@+id/category_spinner"
++                android:id="@+id/categorySpinner"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"/>
+ 
+-
+         <android.support.design.widget.TextInputLayout
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 android:id="@+id/title"
+-                app:layout_constraintTop_toBottomOf="@+id/category_spinner"
++                app:layout_constraintTop_toBottomOf="@+id/categorySpinner"
+                 style="@style/textInputLayoutStyle">
+             <EditText
+                     style="@style/editTextStyle"
+@@ -134,11 +134,12 @@
+                 android:orientation="vertical"
+                 app:layout_constraintBottom_toTopOf="@+id/email">
+ 
+-            <TextView android:layout_width="match_parent"
+-                      android:layout_height="0dp"
+-                      android:text="Saving your item..."
+-                      android:gravity="center"
+-                      android:layout_weight="1"/>
++            <TextView
++                    android:layout_width="match_parent"
++                    android:layout_height="0dp"
++                    android:text="Saving your item..."
++                    android:gravity="center"
++                    android:layout_weight="1"/>
+ 
+             <ProgressBar
+                     style="?android:attr/progressBarStyleHorizontal"
+Index: app/src/main/java/com/truecaller/giveapp/view/AddItemActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.view\n\nimport android.os.Bundle\nimport android.support.v7.app.AppCompatActivity\nimport android.view.Menu\nimport android.view.MenuItem\nimport android.view.View\nimport android.widget.AdapterView\nimport android.widget.ArrayAdapter\nimport android.widget.Spinner\nimport com.truecaller.giveapp.App\nimport com.truecaller.giveapp.R\nimport com.truecaller.giveapp.model.Item\nimport com.truecaller.giveapp.presenter.AddItemPresenter\nimport kotlinx.android.synthetic.main.activity_add_item.*\nimport javax.inject.Inject\n\n\nclass AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, AddItemView {\n\n    @Inject\n    lateinit var presenter: AddItemPresenter\n\n    var category: String = \"\"\n    private val listOfSpinnerItems =\n        arrayOf(\"Not sure\", \"Vegetables\", \"Fruits\", \"Breads\", \"Meat\", \"Juice\", \"Wine\", \"Beer\", \"Ice cream\", \"Candy\")\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        App.component.inject(this)\n        super.onCreate(savedInstanceState)\n        setContentView(R.layout.activity_add_item)\n        setUpCategorySpinner()\n        presenter.onAttachView(this)\n    }\n\n    private fun setUpCategorySpinner() {\n        val spinner = findViewById<Spinner>(R.id.category_spinner)\n        spinner.onItemSelectedListener = this\n        val arrayAdapter = ArrayAdapter(\n            this,\n            android.R.layout.simple_spinner_item, listOfSpinnerItems\n        )\n        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)\n        spinner.adapter = arrayAdapter\n    }\n\n    override fun onNothingSelected(parent: AdapterView<*>?) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {\n        category = listOfSpinnerItems[position]\n    }\n\n    override fun onCreateOptionsMenu(menu: Menu?): Boolean {\n        val inflater = menuInflater\n        inflater.inflate(R.menu.menu_add, menu)\n        return super.onCreateOptionsMenu(menu)\n    }\n\n    override fun onOptionsItemSelected(item: MenuItem?): Boolean {\n        when (item?.itemId) {\n            R.id.action_save -> {\n                val item = Item()\n                presenter.saveItem(item)\n                return true\n            }\n        }\n        return super.onOptionsItemSelected(item)\n    }\n\n    override fun onStop() {\n        presenter.onDetachView()\n        super.onStop()\n    }\n\n    override fun showProgress(show: Boolean) {\n        progressDialog.visibility = if (show) {\n            View.VISIBLE\n        } else {\n            View.GONE\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/view/AddItemActivity.kt	(revision 650028ac70f526f6dde28622122b0ac4435797fb)
++++ app/src/main/java/com/truecaller/giveapp/view/AddItemActivity.kt	(date 1540115423000)
+@@ -1,5 +1,8 @@
+ package com.truecaller.giveapp.view
+ 
++import android.app.Activity
++import android.content.Intent
++import android.net.Uri
+ import android.os.Bundle
+ import android.support.v7.app.AppCompatActivity
+ import android.view.Menu
+@@ -7,7 +10,6 @@
+ import android.view.View
+ import android.widget.AdapterView
+ import android.widget.ArrayAdapter
+-import android.widget.Spinner
+ import com.truecaller.giveapp.App
+ import com.truecaller.giveapp.R
+ import com.truecaller.giveapp.model.Item
+@@ -15,6 +17,7 @@
+ import kotlinx.android.synthetic.main.activity_add_item.*
+ import javax.inject.Inject
+ 
++const val REQUEST_CODE_PHOTO_PICKER = 1
+ 
+ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, AddItemView {
+ 
+@@ -25,23 +28,48 @@
+     private val listOfSpinnerItems =
+         arrayOf("Not sure", "Vegetables", "Fruits", "Breads", "Meat", "Juice", "Wine", "Beer", "Ice cream", "Candy")
+ 
+-    override fun onCreate(savedInstanceState: Bundle?) {
++    override fun onStart() {
++        super.onStart()
+         App.component.inject(this)
++        presenter.onAttachView(this)
++    }
++
++    override fun onStop() {
++        presenter.onDetachView()
++        super.onStop()
++    }
++
++    override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_add_item)
+         setUpCategorySpinner()
+-        presenter.onAttachView(this)
++
++        camera.setOnClickListener {
++            val intent = Intent(Intent.ACTION_GET_CONTENT)
++            intent.type = "image/jpeg"
++            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
++            startActivityForResult(Intent.createChooser(intent, "Complete action using"), REQUEST_CODE_PHOTO_PICKER)
++        }
++    }
++
++    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
++        if(requestCode == REQUEST_CODE_PHOTO_PICKER && resultCode == Activity.RESULT_OK) {
++            val uri: Uri? = data?.data
++            uri?.let {
++                presenter.uploadImage(uri)
++            }
++        }
++        super.onActivityResult(requestCode, resultCode, data)
+     }
+ 
+     private fun setUpCategorySpinner() {
+-        val spinner = findViewById<Spinner>(R.id.category_spinner)
+-        spinner.onItemSelectedListener = this
++        categorySpinner.onItemSelectedListener = this
+         val arrayAdapter = ArrayAdapter(
+             this,
+             android.R.layout.simple_spinner_item, listOfSpinnerItems
+         )
+         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+-        spinner.adapter = arrayAdapter
++        categorySpinner.adapter = arrayAdapter
+     }
+ 
+     override fun onNothingSelected(parent: AdapterView<*>?) {
+@@ -69,11 +97,6 @@
+         return super.onOptionsItemSelected(item)
+     }
+ 
+-    override fun onStop() {
+-        presenter.onDetachView()
+-        super.onStop()
+-    }
+-
+     override fun showProgress(show: Boolean) {
+         progressDialog.visibility = if (show) {
+             View.VISIBLE
+Index: app/src/main/java/com/truecaller/giveapp/view/AddItemView.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.view\n\ninterface AddItemView {\n    fun showProgress(show: Boolean)\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/view/AddItemView.kt	(revision 650028ac70f526f6dde28622122b0ac4435797fb)
++++ app/src/main/java/com/truecaller/giveapp/view/AddItemView.kt	(date 1540115371000)
+@@ -1,5 +1,10 @@
+ package com.truecaller.giveapp.view
+ 
++import com.google.firebase.storage.StorageReference
++
+ interface AddItemView {
+     fun showProgress(show: Boolean)
++    fun showError(errorMessage: String)
++    fun showFileUploadProgress(progress: Int)
++    fun showImage(imageStorageRef: StorageReference)
+ }
+\ No newline at end of file

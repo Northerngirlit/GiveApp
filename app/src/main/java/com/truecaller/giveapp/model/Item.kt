@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 @Parcelize
 @IgnoreExtraProperties
-class Item : Parcelable {
+class Item() : Parcelable {
     var id: String = ""
     var title: String = ""
     var description: String = ""
@@ -21,6 +21,28 @@ class Item : Parcelable {
     var address: String = ""
     var email: String = ""
     var creationTimestamp: Long = 0
+
+    constructor(
+        title: String,
+        description: String,
+        category: String,
+        address: String,
+        phoneNumber: String,
+        email: String,
+        lifetime: Long,
+        creationTimeStamp: Long,
+        fileRef: String?
+    ) : this() {
+        this.title = title
+        this.description = description
+        this.category = category
+        this.address = address
+        this.phone = phoneNumber
+        this.email = email
+        this.lifetime = lifetime
+        this.creationTimestamp = creationTimeStamp
+        this.picture = fileRef ?: ""
+    }
 
     @Exclude
     fun toMap(): Map<String, Any> {
