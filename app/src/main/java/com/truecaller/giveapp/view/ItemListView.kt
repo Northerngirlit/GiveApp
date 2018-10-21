@@ -6,5 +6,4 @@ interface ItemListView {
     fun showItemList(itemList: List<Item>)
     fun showProgress(show: Boolean)
     fun showError(errorMessage: String)
-    fun openAddActivity()
 }

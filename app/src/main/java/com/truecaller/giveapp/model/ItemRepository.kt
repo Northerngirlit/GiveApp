@@ -1,34 +1,34 @@
-package com.truecaller.giveapp.model.api
+package com.truecaller.giveapp.model
 
 import com.google.firebase.database.*
-import com.truecaller.giveapp.model.Item
+import com.truecaller.giveapp.presenter.OnItemAddCallback
+import com.truecaller.giveapp.presenter.OnItemLoadCallback
 import javax.inject.Inject
 
 const val ITEMS_CHILD = "items"
 
 class ItemRepository @Inject constructor() {
 
-    var itemEventEventCallback: OnItemEventCallback? = null
-
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val itemDatabaseRef: DatabaseReference = database.reference.child(ITEMS_CHILD)
 
-    fun loadItems() {
+    fun loadItems(callback: OnItemLoadCallback) {
         itemDatabaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val items = dataSnapshot.children.mapNotNull { it.getValue(Item::class.java) }
-                itemEventEventCallback?.onItemListLoaded(items)
+                callback.onItemListLoaded(items)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                itemEventEventCallback?.onItemEventError(databaseError.message)
+                callback.onItemEventError(databaseError.message)
             }
         })
     }
 
-    fun saveItem(item: Item) {
+    fun saveItem(item: Item, callback: OnItemAddCallback) {
         itemDatabaseRef.push().setValue(item)
-            .addOnFailureListener { itemEventEventCallback?.onItemEventError("Error while adding new item") }
+            .addOnSuccessListener { callback.onItemAdded() }
+            .addOnFailureListener { callback.onItemEventError("Error while adding new item") }
     }
 
     fun updateItem(item: Item) {
@@ -41,10 +41,3 @@ class ItemRepository @Inject constructor() {
 
 }
 
-interface OnItemEventCallback {
-    fun onItemAdded(item: Item)
-
-    fun onItemListLoaded(itemList: List<Item>)
-
-    fun onItemEventError(errorMessage: String)
-}
