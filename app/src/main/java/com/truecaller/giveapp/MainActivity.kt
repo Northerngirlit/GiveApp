@@ -22,11 +22,16 @@ class MainActivity : AppCompatActivity(), ItemListFragment.OnFragmentInteraction
 
     private fun addFragment(fragment: Fragment, addToBackStack: Boolean = false) {
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, fragment)
+            .add(android.R.id.content, fragment)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (addToBackStack)
             fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
     }
 
 }
