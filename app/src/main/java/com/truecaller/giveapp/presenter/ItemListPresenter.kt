@@ -1,6 +1,5 @@
 package com.truecaller.giveapp.presenter
 
-import android.content.Intent
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.model.api.ItemRepository
 import com.truecaller.giveapp.model.api.OnItemEventCallback

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.truecaller.giveapp.AddActivity
 import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
@@ -62,7 +61,7 @@ class ItemListFragment : Fragment(), ItemListView {
     }
 
     private fun openAddActivity() {
-        val intent = Intent(context, AddActivity::class.java)
+        val intent = Intent(context, AddItemActivity::class.java)
         startActivity(intent)
     }
 
