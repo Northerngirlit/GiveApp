@@ -1,8 +1,6 @@
 package com.truecaller.giveapp.model
 
 import com.google.firebase.database.*
-import com.truecaller.giveapp.presenter.OnItemAddCallback
-import com.truecaller.giveapp.presenter.OnItemLoadCallback
 import javax.inject.Inject
 
 const val ITEMS_CHILD = "items"
@@ -39,5 +37,19 @@ class ItemRepository @Inject constructor() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+}
+
+interface OnItemLoadCallback {
+
+    fun onItemListLoaded(itemList: List<Item>)
+
+    fun onItemEventError(errorMessage: String)
+}
+
+interface OnItemAddCallback {
+
+    fun onItemAdded()
+
+    fun onItemEventError(errorMessage: String)
 }
 

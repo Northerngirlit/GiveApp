@@ -1,0 +1,52 @@
+Index: app/src/main/java/com/truecaller/giveapp/AddActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp\n\nimport android.os.Bundle\nimport android.support.v7.app.AppCompatActivity\nimport android.view.View\nimport android.widget.AdapterView\nimport android.widget.ArrayAdapter\nimport android.widget.Spinner\n\nclass AddActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {\n\n    var category: String = \"\"\n    private val listOfSpinnerItems =\n        arrayOf(\"Not sure\",\"Vegetables\", \"Fruits\", \"Breads\", \"Meat\", \"Juice\", \"Wine\", \"Beer\", \"Ice cream\", \"Candy\")\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContentView(R.layout.activity_add)\n        setUpCategorySpinner()\n    }\n\n    private fun setUpCategorySpinner() {\n        val spinner = findViewById<Spinner>(R.id.category_spinner)\n        spinner.onItemSelectedListener = this\n        val arrayAdapter = ArrayAdapter(\n            this,\n            android.R.layout.simple_spinner_item, listOfSpinnerItems\n        )\n        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)\n        spinner.adapter = arrayAdapter\n    }\n\n    override fun onNothingSelected(parent: AdapterView<*>?) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {\n        category = listOfSpinnerItems[position]\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/AddActivity.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/AddActivity.kt	(date 1540068446000)
+@@ -1,11 +1,18 @@
+ package com.truecaller.giveapp
+ 
++import android.app.Activity
++import android.content.Intent
++import android.net.Uri
+ import android.os.Bundle
+ import android.support.v7.app.AppCompatActivity
+ import android.view.View
+ import android.widget.AdapterView
+ import android.widget.ArrayAdapter
+ import android.widget.Spinner
++import kotlinx.android.synthetic.main.activity_add.*
++
++
++const val REQUEST_CODE_PHOTO_PICKER = 1
+ 
+ class AddActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+ 
+@@ -17,6 +24,23 @@
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_add)
+         setUpCategorySpinner()
++
++        camera.setOnClickListener {
++            val intent = Intent(Intent.ACTION_GET_CONTENT)
++            intent.type = "image/jpeg"
++            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
++            startActivityForResult(Intent.createChooser(intent, "Complete action using"), REQUEST_CODE_PHOTO_PICKER)
++        }
++    }
++
++    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
++        if(requestCode == REQUEST_CODE_PHOTO_PICKER && resultCode == Activity.RESULT_OK) {
++            val uri: Uri? = data?.data
++            uri?.let {
++
++            }
++        }
++        super.onActivityResult(requestCode, resultCode, data)
+     }
+ 
+     private fun setUpCategorySpinner() {

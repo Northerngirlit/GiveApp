@@ -45,7 +45,7 @@ class ItemListFragment : Fragment(), ItemListView {
     }
 
     private fun setUpRecyclerView(items: ArrayList<Item>) {
-        rvItems.adapter = ItemListAdapter(items)
+        rvItems.adapter = ItemListAdapter(items, App.component.fileStorage())
     }
 
     override fun showItemList(itemList: List<Item>) {
