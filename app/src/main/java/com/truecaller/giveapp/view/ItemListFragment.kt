@@ -40,9 +40,12 @@ class ItemListFragment : Fragment(), ItemListView {
         (activity as AppCompatActivity).configToolbar(toolbarList, false, getString(R.string.app_name))
 
         fabAddItem.setOnClickListener { openAddActivity() }
+        
+    }
 
+    override fun onResume() {
+        super.onResume()
         presenter.loadItems()
-
     }
 
     private fun setUpRecyclerView(items: ArrayList<Item>) {

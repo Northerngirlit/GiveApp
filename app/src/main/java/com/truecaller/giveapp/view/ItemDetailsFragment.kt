@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.truecaller.giveapp.App
+import com.truecaller.giveapp.GlideApp
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.utils.configToolbar
@@ -51,6 +53,13 @@ class ItemDetailsFragment : Fragment() {
             tvItemCategory.text = item.category
             tvItemDescription.text = item.description
 
+            context?.let {
+                val fileStorage = App.component.fileStorage()
+                GlideApp.with(it)
+                    .load(fileStorage.getDownloadStorageRef(item.picture))
+                    .into(itemImage)
+            }
+
             val lifetimePercentage = calculateItemLifetimePercentage(item.lifetime, item.creationTimestamp)
             animateLifeTimeProgress(lifetimePercentage)
 
@@ -60,13 +69,17 @@ class ItemDetailsFragment : Fragment() {
 
     private fun calculateItemLifetimePercentage(lifeTime: Long, creationTimeStamp: Long): Int {
         val daysPassed: Long = calculateDaysPassed(creationTimeStamp)
-        return if (daysPassed > lifeTime) {
-            Toast.makeText(context, R.string.error_message_item_expired, Toast.LENGTH_SHORT).show()
-            0
-        } else {
-            val percentage = daysPassed.toDouble() / lifeTime * 100
-            println("end percentage: $percentage")
-            percentage.toInt()
+        return when {
+            daysPassed > lifeTime -> {
+                Toast.makeText(context, R.string.error_message_item_expired, Toast.LENGTH_SHORT).show()
+                0
+            }
+            daysPassed == 0L -> 100
+            else -> {
+                val percentage = daysPassed.toDouble() / lifeTime * 100
+                println("end percentage: $percentage")
+                percentage.toInt()
+            }
         }
     }
 
@@ -77,7 +90,7 @@ class ItemDetailsFragment : Fragment() {
         return daysDifference
     }
 
-    private fun animateLifeTimeProgress(endValue: Int) {
+    private fun animateLifeTimeProgress(endValue: Int = 100) {
         val progressAnimator = ObjectAnimator.ofInt(
             progressBarLifeTime,
             "Progress",
