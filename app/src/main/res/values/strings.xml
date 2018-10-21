@@ -5,11 +5,12 @@
     <string name="item_description">Description</string>
     <string name="item_location">Location</string>
     <string name="item_lifeTime">LifeTime</string>
-    <string name="item_phoneNumber">PhoneNumber</string>
-    <string name="item_emails">emails</string>
+    <string name="item_phoneNumber">Phone Number</string>
+    <string name="item_emails">Email</string>
     <string name="DAY">DAY</string>
     <string name="DAYS">DAYS</string>
     <string name="category">Category</string>
+    <string name="action_add_item">Add Item</string>
 
     <string name="error_message_item_expired">Sorry, Item expired!</string>
 

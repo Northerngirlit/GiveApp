@@ -12,6 +12,7 @@ import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.presenter.AddItemPresenter
+import com.truecaller.giveapp.utils.configToolbar
 import kotlinx.android.synthetic.main.activity_add_item.*
 import javax.inject.Inject
 
@@ -28,6 +29,7 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         App.component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_item)
+        configToolbar(toolbarAddItem, true, getString(R.string.action_add_item))
         setUpCategorySpinner()
         presenter.onAttachView(this)
     }

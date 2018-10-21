@@ -1,158 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbarAddItem"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.CardView
-                android:id="@+id/camera"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:elevation="2dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-            <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:src="@drawable/camera"
-                    android:layout_gravity="center"/>
-        </android.support.v7.widget.CardView>
 
-        <TextView
-                android:id="@+id/CategoryTV"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/category"
-                app:layout_constraintTop_toBottomOf="@+id/camera"/>
-        <Spinner
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/CategoryTV"
-                android:layout_marginTop="8dp"
-                android:id="@+id/category_spinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
-
-        <android.support.design.widget.TextInputLayout
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/title"
-                app:layout_constraintTop_toBottomOf="@+id/category_spinner"
-                style="@style/textInputLayoutStyle">
-            <EditText
-                    android:id="@+id/itemTitle"
-                    style="@style/editTextStyle"
-                    android:hint="@string/item_title"
-                    android:singleLine="true" android:layout_width="match_parent"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/description"
-                app:layout_constraintTop_toBottomOf="@+id/title"
-                style="@style/textInputLayoutStyle">
-            <EditText
-                    android:id="@+id/itemDescription"
-                    style="@style/editTextStyle"
-                    android:hint="@string/item_description"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/location"
-                app:layout_constraintTop_toBottomOf="@+id/description"
-                style="@style/textInputLayoutStyle">
-            <EditText
-                    android:id="@+id/itemLocation"
-                    style="@style/editTextStyle"
-                    android:hint="@string/item_location"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/phoneNumber"
-                app:layout_constraintTop_toBottomOf="@+id/location"
-                style="@style/textInputLayoutStyle">
-            <EditText
-                    android:id="@+id/itemPhoneNumber"
-                    style="@style/editTextStyle"
-                    android:hint="@string/item_phoneNumber"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/email"
-                app:layout_constraintTop_toBottomOf="@+id/phoneNumber"
-                style="@style/textInputLayoutStyle">
-            <EditText
-                    android:id="@+id/itemEmail"
-                    style="@style/editTextStyle"
-                    android:hint="@string/item_emails"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-                app:layout_constraintStart_toStartOf="parent"
-                android:id="@+id/lifeTime"
-                app:layout_constraintTop_toBottomOf="@+id/email"
-                style="@style/textInputLayoutStyle"
-                app:layout_constraintEnd_toStartOf="@+id/days_textView">
-            <EditText
-                    android:id="@+id/itemLifeTime"
-                    style="@style/editTextStyle"
-                    android:hint="@string/item_lifeTime"/>
-        </android.support.design.widget.TextInputLayout>
-        <TextView
-                android:id="@+id/days_textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/DAYS"
-                app:layout_constraintTop_toTopOf="@+id/lifeTime"
-                app:layout_constraintBottom_toBottomOf="@+id/lifeTime"/>
-
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:id="@+id/progressDialog"
-                android:background="@color/colorLightOrangeBackground"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/email">
+                android:layout_height="match_parent"
+                android:padding="8dp">
 
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="0dp"
-                      android:text="Saving your item..."
-                      android:gravity="center"
-                      android:layout_weight="1"/>
+            <android.support.v7.widget.CardView
+                    android:id="@+id/camera"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:elevation="2dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+                <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:src="@drawable/camera"
+                        android:layout_gravity="center"/>
+            </android.support.v7.widget.CardView>
 
-            <ProgressBar
-                    style="?android:attr/progressBarStyleHorizontal"
+            <TextView
+                    android:id="@+id/CategoryTV"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category"
+                    app:layout_constraintTop_toBottomOf="@+id/camera"/>
+            <Spinner
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/CategoryTV"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/category_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+            <android.support.design.widget.TextInputLayout
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/title"
+                    app:layout_constraintTop_toBottomOf="@+id/category_spinner"
+                    style="@style/textInputLayoutStyle">
+                <EditText
+                        android:id="@+id/itemTitle"
+                        style="@style/editTextStyle"
+                        android:hint="@string/item_title"
+                        android:singleLine="true" android:layout_width="match_parent"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/description"
+                    app:layout_constraintTop_toBottomOf="@+id/title"
+                    style="@style/textInputLayoutStyle">
+                <EditText
+                        android:id="@+id/itemDescription"
+                        style="@style/editTextStyle"
+                        android:hint="@string/item_description"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/location"
+                    app:layout_constraintTop_toBottomOf="@+id/description"
+                    style="@style/textInputLayoutStyle">
+                <EditText
+                        android:id="@+id/itemLocation"
+                        style="@style/editTextStyle"
+                        android:hint="@string/item_location"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/phoneNumber"
+                    app:layout_constraintTop_toBottomOf="@+id/location"
+                    style="@style/textInputLayoutStyle">
+                <EditText
+                        android:id="@+id/itemPhoneNumber"
+                        style="@style/editTextStyle"
+                        android:inputType="phone"
+                        android:hint="@string/item_phoneNumber"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/email"
+                    app:layout_constraintTop_toBottomOf="@+id/phoneNumber"
+                    style="@style/textInputLayoutStyle">
+                <EditText
+                        android:id="@+id/itemEmail"
+                        style="@style/editTextStyle"
+                        android:inputType="textEmailAddress"
+                        android:hint="@string/item_emails"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/lifeTime"
+                    app:layout_constraintTop_toBottomOf="@+id/email"
+                    style="@style/textInputLayoutStyle"
+                    app:layout_constraintEnd_toStartOf="@+id/days_textView">
+                <EditText
+                        android:id="@+id/itemLifeTime"
+                        style="@style/editTextStyle"
+                        android:inputType="numberSigned"
+                        android:hint="@string/item_lifeTime"/>
+            </android.support.design.widget.TextInputLayout>
+            <TextView
+                    android:id="@+id/days_textView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/DAYS"
+                    app:layout_constraintTop_toTopOf="@+id/lifeTime"
+                    app:layout_constraintBottom_toBottomOf="@+id/lifeTime"/>
+
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:indeterminate="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"/>
-        </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
-</ScrollView>
+                    android:layout_height="100dp"
+                    android:id="@+id/progressDialog"
+                    android:background="@color/colorLightOrangeBackground"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@+id/email">
+
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="0dp"
+                          android:text="Saving your item..."
+                          android:gravity="center"
+                          android:layout_weight="1"/>
+
+                <ProgressBar
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:indeterminate="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"/>
+            </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>
 
