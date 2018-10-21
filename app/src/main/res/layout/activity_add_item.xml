@@ -8,20 +8,20 @@
 
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="8dp">
 
         <android.support.v7.widget.CardView
                 android:id="@+id/camera"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:elevation="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
             <ImageView
+                    android:id="@+id/logo"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="150dp"
                     android:src="@drawable/camera"
                     android:layout_gravity="center"/>
         </android.support.v7.widget.CardView>
@@ -40,7 +40,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/CategoryTV"
                 android:layout_marginTop="8dp"
-                android:id="@+id/category_spinner"
+                android:id="@+id/categorySpinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
@@ -48,7 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/title"
-                app:layout_constraintTop_toBottomOf="@+id/category_spinner"
+                app:layout_constraintTop_toBottomOf="@+id/categorySpinner"
                 style="@style/textInputLayoutStyle">
             <EditText
                     android:id="@+id/itemTitle"
@@ -139,11 +139,12 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/email">
 
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="0dp"
-                      android:text="Saving your item..."
-                      android:gravity="center"
-                      android:layout_weight="1"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="Saving your item..."
+                    android:gravity="center"
+                    android:layout_weight="1"/>
 
             <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"

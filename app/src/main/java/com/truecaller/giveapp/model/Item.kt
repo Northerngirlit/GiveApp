@@ -5,7 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 import java.util.concurrent.TimeUnit
 
 @IgnoreExtraProperties
-class Item {
+class Item() {
     var id: String = ""
     var title: String = ""
     var description: String = ""
@@ -17,6 +17,26 @@ class Item {
     var phone: String = ""
     var address: String = ""
     var email: String = ""
+
+    constructor(
+        title: String,
+        description: String,
+        category: String,
+        address: String,
+        phoneNumber: String,
+        email: String,
+        lifetime: Long,
+        fileRef: String?
+    ) : this() {
+        this.title = title
+        this.description = description
+        this.category = category
+        this.address = address
+        this.phone = phoneNumber
+        this.email = email
+        this.lifetime = lifetime
+        this.picture = fileRef ?: ""
+    }
 
     @Exclude
     fun toMap(): Map<String, Any> {
