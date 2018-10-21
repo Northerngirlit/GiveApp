@@ -108,6 +108,12 @@ class AddItemActivity : AppCompatActivity(), AddItemView {
             return
         }
 
+        if (itemLifeTime.text.isBlank()) {
+            itemLifeTime.requestFocus()
+            itemLifeTime.error = getString(R.string.phone_number_cannot_be_empty)
+            return
+        }
+
         val category = listOfSpinnerItems[categorySpinner.selectedItemPosition]
         val address = itemLocation.text.toString()
         val email = itemEmail.text.toString()
