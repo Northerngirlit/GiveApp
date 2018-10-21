@@ -2,6 +2,7 @@ package com.truecaller.giveapp.presenter
 
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.model.ItemRepository
+import com.truecaller.giveapp.model.OnItemAddCallback
 import com.truecaller.giveapp.view.AddItemView
 import javax.inject.Inject
 
