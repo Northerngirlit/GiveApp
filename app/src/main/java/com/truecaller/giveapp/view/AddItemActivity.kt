@@ -76,19 +76,19 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
 
         if (title.isBlank()) {
             itemTitle.requestFocus()
-            itemTitle.error = "Title cannot be empty!"
+            itemTitle.error = getString(R.string.title_cannot_be_empty)
             return
         }
 
         if (description.isBlank()) {
             itemDescription.requestFocus()
-            itemDescription.error = "Description cannot be empty!"
+            itemDescription.error = getString(R.string.description_cannot_be_empty)
             return
         }
 
         if (phoneNumber.isBlank()) {
             itemPhoneNumber.requestFocus()
-            itemPhoneNumber.error = "Phone number cannot be empty!"
+            itemPhoneNumber.error = getString(R.string.phone_number_cannot_be_empty)
             return
         }
 
