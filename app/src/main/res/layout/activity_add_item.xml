@@ -88,6 +88,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/location"
                 style="@style/textInputLayoutStyle">
             <EditText
+                    android:inputType="phone"
                     android:id="@+id/itemPhoneNumber"
                     style="@style/editTextStyle"
                     android:hint="@string/item_phoneNumber"/>
