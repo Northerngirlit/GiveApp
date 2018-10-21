@@ -60,7 +60,6 @@ class ItemDetailsFragment : Fragment() {
                     .into(itemImage)
             }
 
-
             val lifetimePercentage = calculateItemLifetimePercentage(item.lifetime, item.creationTimestamp)
             animateLifeTimeProgress(lifetimePercentage)
 
@@ -70,13 +69,17 @@ class ItemDetailsFragment : Fragment() {
 
     private fun calculateItemLifetimePercentage(lifeTime: Long, creationTimeStamp: Long): Int {
         val daysPassed: Long = calculateDaysPassed(creationTimeStamp)
-        return if (daysPassed > lifeTime) {
-            Toast.makeText(context, R.string.error_message_item_expired, Toast.LENGTH_SHORT).show()
-            0
-        } else {
-            val percentage = daysPassed.toDouble() / lifeTime * 100
-            println("end percentage: $percentage")
-            percentage.toInt()
+        return when {
+            daysPassed > lifeTime -> {
+                Toast.makeText(context, R.string.error_message_item_expired, Toast.LENGTH_SHORT).show()
+                0
+            }
+            daysPassed == 0L -> 100
+            else -> {
+                val percentage = daysPassed.toDouble() / lifeTime * 100
+                println("end percentage: $percentage")
+                percentage.toInt()
+            }
         }
     }
 
@@ -87,7 +90,7 @@ class ItemDetailsFragment : Fragment() {
         return daysDifference
     }
 
-    private fun animateLifeTimeProgress(endValue: Int) {
+    private fun animateLifeTimeProgress(endValue: Int = 100) {
         val progressAnimator = ObjectAnimator.ofInt(
             progressBarLifeTime,
             "Progress",
