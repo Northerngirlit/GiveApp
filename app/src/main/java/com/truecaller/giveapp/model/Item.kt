@@ -1,11 +1,14 @@
 package com.truecaller.giveapp.model
 
+import android.os.Parcelable
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
+import kotlinx.android.parcel.Parcelize
 import java.util.concurrent.TimeUnit
 
+@Parcelize
 @IgnoreExtraProperties
-class Item() {
+class Item() : Parcelable {
     var id: String = ""
     var title: String = ""
     var description: String = ""
@@ -17,6 +20,7 @@ class Item() {
     var phone: String = ""
     var address: String = ""
     var email: String = ""
+    var creationTimestamp: Long = 0
 
     constructor(
         title: String,
@@ -50,7 +54,8 @@ class Item() {
             "longitude" to longitude,
             "phone" to phone,
             "address" to address,
-            "email" to email
+            "email" to email,
+            "creationTimestamp" to creationTimestamp
         ).toMap()
     }
 }

@@ -5,10 +5,25 @@
     <string name="item_description">Description</string>
     <string name="item_location">Location</string>
     <string name="item_lifeTime">LifeTime</string>
-    <string name="item_phoneNumber">PhoneNumber</string>
-    <string name="item_emails">emails</string>
+    <string name="item_phoneNumber">Phone Number</string>
+    <string name="item_emails">Email</string>
     <string name="DAY">DAY</string>
     <string name="DAYS">DAYS</string>
     <string name="category">Category</string>
+    <string name="action_add_item">Add Item</string>
+
+    <string name="error_message_item_expired">Sorry, Item expired!</string>
+
+    <string name="lorem_ipsum">Jarlsberg lancashire edam. Dolcelatte hard cheese brie st. agur blue
+        cheese caerphilly bavarian bergkase cheese and biscuits mascarpone. Cheeseburger swiss bavarian
+        bergkase cream cheese fromage frais cheesy feet port-salut airedale. St. agur blue cheese rubber
+        cheese caerphilly cheddar cheesecake cream cheese manchego lancashire. Roquefort squirty cheese
+        the big cheese.
+    </string>
+
     <string name="menu_save_item">Save</string>
+    <string name="title_cannot_be_empty">"Title cannot be empty!"</string>
+    <string name="description_cannot_be_empty">"Description cannot be empty!"</string>
+    <string name="phone_number_cannot_be_empty">"Phone number cannot be empty!"</string>
+    <string name="msg_progress_dialog_saving">Saving...</string>
 </resources>

@@ -15,6 +15,7 @@ import com.truecaller.giveapp.App
 import com.truecaller.giveapp.GlideApp
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.presenter.AddItemPresenter
+import com.truecaller.giveapp.utils.configToolbar
 import kotlinx.android.synthetic.main.activity_add_item.*
 import javax.inject.Inject
 
@@ -33,6 +34,8 @@ class AddItemActivity : AppCompatActivity(), AddItemView {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_add_item)
+
+        configToolbar(toolbarAddItem, true, getString(R.string.action_add_item))
 
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOfSpinnerItems)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -89,19 +92,19 @@ class AddItemActivity : AppCompatActivity(), AddItemView {
 
         if (title.isBlank()) {
             itemTitle.requestFocus()
-            itemTitle.error = "Title cannot be empty!"
+            itemTitle.error = getString(R.string.title_cannot_be_empty)
             return
         }
 
         if (description.isBlank()) {
             itemDescription.requestFocus()
-            itemDescription.error = "Description cannot be empty!"
+            itemDescription.error = getString(R.string.description_cannot_be_empty)
             return
         }
 
         if (phoneNumber.isBlank()) {
             itemPhoneNumber.requestFocus()
-            itemPhoneNumber.error = "Phone number cannot be empty!"
+            itemPhoneNumber.error = getString(R.string.phone_number_cannot_be_empty)
             return
         }
 
