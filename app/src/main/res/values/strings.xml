@@ -25,5 +25,6 @@
     <string name="title_cannot_be_empty">"Title cannot be empty!"</string>
     <string name="description_cannot_be_empty">"Description cannot be empty!"</string>
     <string name="phone_number_cannot_be_empty">"Phone number cannot be empty!"</string>
+    <string name="lifetime_cannot_be_empty">"Lifetime cannot be empty!"</string>
     <string name="msg_progress_dialog_saving">Saving...</string>
 </resources>
