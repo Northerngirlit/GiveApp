@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
 import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
@@ -74,17 +73,20 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         val phoneNumber = itemPhoneNumber.text.toString()
 
         if (title.isBlank()) {
-            Toast.makeText(this, "Title cannot be empty!", Toast.LENGTH_SHORT).show()
+            itemTitle.requestFocus()
+            itemTitle.error = "Title cannot be empty!"
             return
         }
 
         if (description.isBlank()) {
-            Toast.makeText(this, "Description cannot be empty!", Toast.LENGTH_SHORT).show()
+            itemDescription.requestFocus()
+            itemDescription.error = "Description cannot be empty!"
             return
         }
 
         if (phoneNumber.isBlank()) {
-            Toast.makeText(this, "Phone number cannot be empty!", Toast.LENGTH_SHORT).show()
+            itemPhoneNumber.requestFocus()
+            itemPhoneNumber.error = "Phone number cannot be empty!"
             return
         }
 
