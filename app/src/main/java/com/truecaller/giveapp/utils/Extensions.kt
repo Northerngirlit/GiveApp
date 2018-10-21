@@ -1,5 +1,12 @@
 package com.truecaller.giveapp.utils
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,4 +23,25 @@ fun ViewGroup.inflate(layoutRes: Int): View {
 
 fun ImageView.loadUrl(url: String?) {
     //TODO load image
+}
+
+////////////////////Activity//////////////////////////
+
+fun Activity.setStatusBarColor(color: Int) {
+    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        window.statusBarColor = color
+    }
+}
+
+
+fun AppCompatActivity.configToolbar(toolbar: Toolbar, displayHomeAsUpEnabled: Boolean, title: String? = null) {
+    setSupportActionBar(toolbar)
+    supportActionBar?.setDisplayHomeAsUpEnabled(displayHomeAsUpEnabled)
+    title?.let { supportActionBar?.title = it }
+}
+
+fun Context.dialNumber(number: String) {
+    val callIntent = Intent(Intent.ACTION_DIAL)
+    callIntent.data = Uri.parse("tel:$number")
+    startActivity(callIntent)
 }

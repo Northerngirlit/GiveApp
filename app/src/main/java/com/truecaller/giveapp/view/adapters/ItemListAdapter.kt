@@ -8,12 +8,14 @@ import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.FileStorage
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.utils.inflate
+import com.truecaller.giveapp.utils.loadUrl
 import kotlinx.android.synthetic.main.row_item.view.*
 
 
 class ItemListAdapter(
     private val items: ArrayList<Item>,
-    private val fileStorage: FileStorage
+    private val fileStorage: FileStorage,
+    private val listener: (Item) -> Unit
 ) :
     RecyclerView.Adapter<ItemListAdapter.ItemsViewHolder>() {
 
@@ -22,7 +24,7 @@ class ItemListAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], listener)
     }
 
     override fun getItemCount(): Int {
@@ -37,8 +39,8 @@ class ItemListAdapter(
 
     class ItemsViewHolder(view: View, val fileStorage: FileStorage) : RecyclerView.ViewHolder(view) {
 
-        fun bind(item: Item) {
-            itemView.title.text = item.title
+        fun bind(item: Item, listener: (Item) -> Unit) = with(itemView) {
+            title.text = item.title
 
             if (!item.picture.isEmpty()) {
                 val context = itemView.context
@@ -47,6 +49,9 @@ class ItemListAdapter(
                     .load(fileStorage.getDownloadStorageRef(item.picture))
                     .into(itemView.thumbnail)
             }
+
+            setOnClickListener { listener(item) }
+
         }
     }
 }
