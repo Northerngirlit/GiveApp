@@ -11,4 +11,8 @@
     <string name="DAYS">DAYS</string>
     <string name="category">Category</string>
     <string name="menu_save_item">Save</string>
+    <string name="title_cannot_be_empty">"Title cannot be empty!"</string>
+    <string name="description_cannot_be_empty">"Description cannot be empty!"</string>
+    <string name="phone_number_cannot_be_empty">"Phone number cannot be empty!"</string>
+    <string name="msg_progress_dialog_saving">Saving...</string>
 </resources>

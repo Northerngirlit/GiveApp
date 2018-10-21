@@ -141,7 +141,7 @@
 
             <TextView android:layout_width="match_parent"
                       android:layout_height="0dp"
-                      android:text="Saving your item..."
+                      android:text="@string/msg_progress_dialog_saving"
                       android:gravity="center"
                       android:layout_weight="1"/>
 
