@@ -8,8 +8,7 @@ import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.view.ItemDetailsFragment
 import com.truecaller.giveapp.view.ItemListFragment
 
-class MainActivity : AppCompatActivity(), ItemListFragment.OnFragmentInteractionListener,
-    ItemDetailsFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), ItemListFragment.OnFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

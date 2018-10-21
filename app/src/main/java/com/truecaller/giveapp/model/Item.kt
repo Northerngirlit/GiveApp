@@ -20,6 +20,7 @@ class Item : Parcelable {
     var phone: String = ""
     var address: String = ""
     var email: String = ""
+    var creationTimestamp: Long = 0
 
     @Exclude
     fun toMap(): Map<String, Any> {
@@ -33,7 +34,8 @@ class Item : Parcelable {
             "longitude" to longitude,
             "phone" to phone,
             "address" to address,
-            "email" to email
+            "email" to email,
+            "creationTimestamp" to creationTimestamp
         ).toMap()
     }
 }
