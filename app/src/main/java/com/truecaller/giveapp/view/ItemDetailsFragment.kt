@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.truecaller.giveapp.App
+import com.truecaller.giveapp.GlideApp
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.utils.configToolbar
@@ -50,6 +52,14 @@ class ItemDetailsFragment : Fragment() {
             collapsingToolbar.title = item.title
             tvItemCategory.text = item.category
             tvItemDescription.text = item.description
+
+            context?.let {
+                val fileStorage = App.component.fileStorage()
+                GlideApp.with(it)
+                    .load(fileStorage.getDownloadStorageRef(item.picture))
+                    .into(itemImage)
+            }
+
 
             val lifetimePercentage = calculateItemLifetimePercentage(item.lifetime, item.creationTimestamp)
             animateLifeTimeProgress(lifetimePercentage)
