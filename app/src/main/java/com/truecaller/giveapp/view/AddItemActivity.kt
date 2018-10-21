@@ -27,7 +27,7 @@ class AddItemActivity : AppCompatActivity(), AddItemView {
     lateinit var presenter: AddItemPresenter
 
     private val listOfSpinnerItems =
-        arrayOf("Not sure", "Vegetables", "Fruits", "Breads", "Meat", "Juice", "Wine", "Beer", "Ice cream", "Candy")
+        arrayOf("Not sure", "Food", "Groceries", "Clothes", "Furniture")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         App.component.inject(this)
@@ -135,7 +135,7 @@ class AddItemActivity : AppCompatActivity(), AddItemView {
     override fun showImage(imageStorageRef: StorageReference) {
         GlideApp.with(this)
             .load(imageStorageRef)
-            .into(logo)
+            .into(itemImage)
     }
 
     override fun finishActivity() {
