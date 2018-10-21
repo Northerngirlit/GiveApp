@@ -1,0 +1,449 @@
+Index: app/src/main/java/com/truecaller/giveapp/presenter/OnItemEventCallback.kt
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/presenter/OnItemEventCallback.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/presenter/OnItemEventCallback.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
+@@ -1,17 +0,0 @@
+-package com.truecaller.giveapp.presenter
+-
+-import com.truecaller.giveapp.model.Item
+-
+-interface OnItemLoadCallback {
+-
+-    fun onItemListLoaded(itemList: List<Item>)
+-
+-    fun onItemEventError(errorMessage: String)
+-}
+-
+-interface OnItemAddCallback {
+-
+-    fun onItemAdded()
+-
+-    fun onItemEventError(errorMessage: String)
+-}
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/view/adapters/ItemListAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.view.adapters\n\nimport android.support.v7.widget.RecyclerView\nimport android.view.View\nimport android.view.ViewGroup\nimport com.truecaller.giveapp.R\nimport com.truecaller.giveapp.model.Item\nimport com.truecaller.giveapp.utils.inflate\nimport com.truecaller.giveapp.utils.loadUrl\nimport kotlinx.android.synthetic.main.row_item.view.*\n\n\nclass ItemListAdapter(private val items: ArrayList<Item>) :\n    RecyclerView.Adapter<ItemListAdapter.ItemsViewHolder>() {\n\n    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {\n        return ItemsViewHolder(parent.inflate(R.layout.row_item))\n    }\n\n    override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {\n        holder.bind(items[position])\n    }\n\n    override fun getItemCount(): Int {\n        return items.size\n    }\n\n    private fun addItems(newItems: List<Item>) {\n        val count = itemCount\n        items.addAll(newItems)\n        notifyItemRangeInserted(count, newItems.size)\n    }\n\n    class ItemsViewHolder(view: View) : RecyclerView.ViewHolder(view) {\n\n        fun bind(item: Item) {\n            itemView.title.text = item.title\n\n            itemView.thumbnail.loadUrl(item.picture)//TODO load thumbnail\n        }\n\n\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/view/adapters/ItemListAdapter.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/view/adapters/ItemListAdapter.kt	(date 1540113397000)
+@@ -3,18 +3,23 @@
+ import android.support.v7.widget.RecyclerView
+ import android.view.View
+ import android.view.ViewGroup
++import com.truecaller.giveapp.GlideApp
+ import com.truecaller.giveapp.R
++import com.truecaller.giveapp.model.FileStorage
+ import com.truecaller.giveapp.model.Item
+ import com.truecaller.giveapp.utils.inflate
+ import com.truecaller.giveapp.utils.loadUrl
+ import kotlinx.android.synthetic.main.row_item.view.*
+ 
+ 
+-class ItemListAdapter(private val items: ArrayList<Item>) :
++class ItemListAdapter(
++    private val items: ArrayList<Item>,
++    private val fileStorage: FileStorage
++) :
+     RecyclerView.Adapter<ItemListAdapter.ItemsViewHolder>() {
+ 
+     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
+-        return ItemsViewHolder(parent.inflate(R.layout.row_item))
++        return ItemsViewHolder(parent.inflate(R.layout.row_item), fileStorage)
+     }
+ 
+     override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {
+@@ -31,14 +36,19 @@
+         notifyItemRangeInserted(count, newItems.size)
+     }
+ 
+-    class ItemsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
++    class ItemsViewHolder(view: View, val fileStorage: FileStorage) : RecyclerView.ViewHolder(view) {
+ 
+         fun bind(item: Item) {
+             itemView.title.text = item.title
+ 
+             itemView.thumbnail.loadUrl(item.picture)//TODO load thumbnail
+-        }
+-
++            if (!item.picture.isEmpty()) {
++                val context = itemView.context
+ 
++                GlideApp.with(context)
++                    .load(fileStorage.getDownloadStorageRef(item.picture))
++                    .into(itemView.thumbnail)
++            }
++        }
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/view/ItemListFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.view\n\nimport android.content.Intent\nimport android.os.Bundle\nimport android.support.v4.app.Fragment\nimport android.view.LayoutInflater\nimport android.view.View\nimport android.view.ViewGroup\nimport android.widget.Toast\nimport com.truecaller.giveapp.AddActivity\nimport com.truecaller.giveapp.App\nimport com.truecaller.giveapp.R\nimport com.truecaller.giveapp.model.Item\nimport com.truecaller.giveapp.presenter.ItemListPresenter\nimport com.truecaller.giveapp.view.adapters.ItemListAdapter\nimport kotlinx.android.synthetic.main.fragment_item_list.*\nimport javax.inject.Inject\n\nclass ItemListFragment : Fragment(), ItemListView {\n\n    @Inject\n    lateinit var presenter: ItemListPresenter\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        App.component.inject(this)\n        super.onCreate(savedInstanceState)\n        presenter.onAttachView(this)\n    }\n\n    override fun onDetach() {\n        super.onDetach()\n        presenter.onDetachView()\n    }\n\n    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {\n        return inflater.inflate(R.layout.fragment_item_list, container, false)\n    }\n\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\n        super.onViewCreated(view, savedInstanceState)\n\n        fabAddItem.setOnClickListener { openAddActivity() }\n\n        presenter.loadItems()\n\n    }\n\n    private fun setUpRecyclerView(items: ArrayList<Item>) {\n        rvItems.adapter = ItemListAdapter(items)\n    }\n\n    override fun showItemList(itemList: List<Item>) {\n        setUpRecyclerView(itemList as ArrayList<Item>)\n        Toast.makeText(context, \"Items loaded ${itemList.size}\", Toast.LENGTH_SHORT).show()\n    }\n\n    override fun showProgress(show: Boolean) {\n        progressBar.visibility = if (show) {\n            View.VISIBLE\n        } else {\n            View.GONE\n        }\n    }\n\n    override fun showError(errorMessage: String) {\n        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()\n    }\n\n    private fun openAddActivity() {\n        val intent = Intent(context, AddActivity::class.java)\n        startActivity(intent)\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/view/ItemListFragment.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/view/ItemListFragment.kt	(date 1540106787000)
+@@ -1,15 +1,17 @@
+ package com.truecaller.giveapp.view
+ 
++import android.app.Activity
+ import android.content.Intent
++import android.net.Uri
+ import android.os.Bundle
+ import android.support.v4.app.Fragment
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+ import android.widget.Toast
+-import com.truecaller.giveapp.AddActivity
+ import com.truecaller.giveapp.App
+ import com.truecaller.giveapp.R
++import com.truecaller.giveapp.REQUEST_CODE_PHOTO_PICKER
+ import com.truecaller.giveapp.model.Item
+ import com.truecaller.giveapp.presenter.ItemListPresenter
+ import com.truecaller.giveapp.view.adapters.ItemListAdapter
+@@ -46,7 +48,7 @@
+     }
+ 
+     private fun setUpRecyclerView(items: ArrayList<Item>) {
+-        rvItems.adapter = ItemListAdapter(items)
++        rvItems.adapter = ItemListAdapter(items, App.component.fileStorage())
+     }
+ 
+     override fun showItemList(itemList: List<Item>) {
+@@ -67,7 +69,22 @@
+     }
+ 
+     private fun openAddActivity() {
+-        val intent = Intent(context, AddActivity::class.java)
+-        startActivity(intent)
++        //val intent = Intent(context, AddActivity::class.java)
++        //startActivity(intent)
++
++        val intent = Intent(Intent.ACTION_GET_CONTENT)
++        intent.type = "image/jpeg"
++        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
++        startActivityForResult(Intent.createChooser(intent, "Complete action using"), REQUEST_CODE_PHOTO_PICKER)
++    }
++
++    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
++        super.onActivityResult(requestCode, resultCode, data)
++        if(requestCode == REQUEST_CODE_PHOTO_PICKER && resultCode == Activity.RESULT_OK) {
++            val uri: Uri? = data?.data
++            uri?.let {
++                presenter.uploadImage(uri)
++            }
++        }
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/model/FileStorage.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/model/FileStorage.kt	(date 1540112796000)
++++ app/src/main/java/com/truecaller/giveapp/model/FileStorage.kt	(date 1540112796000)
+@@ -0,0 +1,39 @@
++package com.truecaller.giveapp.model
++
++import android.net.Uri
++import com.google.firebase.storage.FirebaseStorage
++import com.google.firebase.storage.StorageReference
++import java.util.*
++import javax.inject.Inject
++import javax.inject.Singleton
++
++const val FILE_CHILD = "files"
++
++@Singleton
++class FileStorage @Inject constructor() {
++
++    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
++    private val fileStorageRef: StorageReference = storage.reference.child(FILE_CHILD)
++
++    fun uploadFile(uri: Uri, callback: OnFileUploadCallback) {
++        val fileRef = UUID.randomUUID().toString()
++        fileStorageRef.child(fileRef).putFile(uri)
++            .addOnSuccessListener { callback.onFileUploaded(fileRef) }
++            .addOnProgressListener { taskSnapshot -> callback.onFileUploadProgress((100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount) }
++            .addOnFailureListener { callback.onFileUploadError("Error while uploading image") }
++    }
++
++    fun getDownloadStorageRef(fileRef: String): StorageReference {
++        return fileStorageRef.child(fileRef)
++    }
++
++}
++
++interface OnFileUploadCallback {
++
++    fun onFileUploaded(id: String)
++
++    fun onFileUploadProgress(progress: Double)
++
++    fun onFileUploadError(errorMessage: String)
++}
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\napply plugin: 'kotlin-android'\napply plugin: 'kotlin-android-extensions'\napply plugin: 'kotlin-kapt'\n\nandroid {\n    compileSdkVersion 28\n    defaultConfig {\n        applicationId \"com.truecaller.giveapp\"\n        minSdkVersion 19\n        targetSdkVersion 28\n        versionCode 1\n        versionName \"1.0\"\n        testInstrumentationRunner \"android.support.test.runner.AndroidJUnitRunner\"\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\n        }\n    }\n}\n\ndependencies {\n    implementation fileTree(dir: 'libs', include: ['*.jar'])\n    implementation \"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version\"\n    implementation \"com.android.support:appcompat-v7:$support_lib_version\"\n    implementation 'com.android.support.constraint:constraint-layout:1.1.3'\n    implementation \"com.android.support:cardview-v7:$support_lib_version\"\n    implementation \"com.android.support:recyclerview-v7:$support_lib_version\"\n    implementation \"com.android.support:design:$support_lib_version\"\n\n    testImplementation 'junit:junit:4.12'\n    androidTestImplementation 'com.android.support.test:runner:1.0.2'\n    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'\n\n    implementation 'com.google.firebase:firebase-core:16.0.4'\n    implementation 'com.google.firebase:firebase-database:16.0.3'\n\n    implementation \"com.google.dagger:dagger:2.17\"\n    kapt \"com.google.dagger:dagger-compiler:2.17\"\n\n    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2'\n    implementation 'com.android.support:cardview-v7:28.0.0'\n    compile 'com.android.support:design:28.0.0'\n}\n\napply plugin: 'com.google.gms.google-services'
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/build.gradle	(date 1540113270000)
+@@ -19,6 +19,10 @@
+             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+         }
+     }
++
++    repositories {
++        mavenCentral()
++    }
+ }
+ 
+ dependencies {
+@@ -36,10 +40,15 @@
+ 
+     implementation 'com.google.firebase:firebase-core:16.0.4'
+     implementation 'com.google.firebase:firebase-database:16.0.3'
++    implementation 'com.google.firebase:firebase-storage:16.0.3'
++    implementation 'com.firebaseui:firebase-ui-storage:3.2.1'
+ 
+     implementation "com.google.dagger:dagger:2.17"
+     kapt "com.google.dagger:dagger-compiler:2.17"
+ 
++    implementation 'com.github.bumptech.glide:glide:4.8.0'
++    kapt 'com.github.bumptech.glide:compiler:4.8.0'
++
+     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2'
+     implementation 'com.android.support:cardview-v7:28.0.0'
+     compile 'com.android.support:design:28.0.0'
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(date 1540067603000)
++++ .idea/gradle.xml	(date 1540067603000)
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="GradleSettings">
++    <option name="linkedExternalProjectsSettings">
++      <GradleProjectSettings>
++        <option name="distributionType" value="DEFAULT_WRAPPED" />
++        <option name="externalProjectPath" value="$PROJECT_DIR$" />
++        <option name="modules">
++          <set>
++            <option value="$PROJECT_DIR$" />
++            <option value="$PROJECT_DIR$/app" />
++          </set>
++        </option>
++        <option name="resolveModulePerSourceSet" value="false" />
++      </GradleProjectSettings>
++    </option>
++  </component>
++</project>
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/model/ItemRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.model\n\nimport com.google.firebase.database.*\nimport com.truecaller.giveapp.presenter.OnItemAddCallback\nimport com.truecaller.giveapp.presenter.OnItemLoadCallback\nimport javax.inject.Inject\n\nconst val ITEMS_CHILD = \"items\"\n\nclass ItemRepository @Inject constructor() {\n\n    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()\n    private val itemDatabaseRef: DatabaseReference = database.reference.child(ITEMS_CHILD)\n\n    fun loadItems(callback: OnItemLoadCallback) {\n        itemDatabaseRef.addListenerForSingleValueEvent(object : ValueEventListener {\n            override fun onDataChange(dataSnapshot: DataSnapshot) {\n                val items = dataSnapshot.children.mapNotNull { it.getValue(Item::class.java) }\n                callback.onItemListLoaded(items)\n            }\n\n            override fun onCancelled(databaseError: DatabaseError) {\n                callback.onItemEventError(databaseError.message)\n            }\n        })\n    }\n\n    fun saveItem(item: Item, callback: OnItemAddCallback) {\n        itemDatabaseRef.push().setValue(item)\n            .addOnSuccessListener { callback.onItemAdded() }\n            .addOnFailureListener { callback.onItemEventError(\"Error while adding new item\") }\n    }\n\n    fun updateItem(item: Item) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    fun deleteItem(item: Item) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/model/ItemRepository.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/model/ItemRepository.kt	(date 1540105688000)
+@@ -1,8 +1,6 @@
+ package com.truecaller.giveapp.model
+ 
+ import com.google.firebase.database.*
+-import com.truecaller.giveapp.presenter.OnItemAddCallback
+-import com.truecaller.giveapp.presenter.OnItemLoadCallback
+ import javax.inject.Inject
+ 
+ const val ITEMS_CHILD = "items"
+@@ -41,3 +39,17 @@
+ 
+ }
+ 
++interface OnItemLoadCallback {
++
++    fun onItemListLoaded(itemList: List<Item>)
++
++    fun onItemEventError(errorMessage: String)
++}
++
++interface OnItemAddCallback {
++
++    fun onItemAdded()
++
++    fun onItemEventError(errorMessage: String)
++}
++
+Index: app/src/main/java/com/truecaller/giveapp/AppComponent.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp\n\nimport com.truecaller.giveapp.view.ItemListFragment\nimport dagger.Component\nimport javax.inject.Singleton\n\n@Singleton\n@Component(modules = [AppModule::class])\ninterface AppComponent {\n    fun inject(fragment: ItemListFragment)\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/AppComponent.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/AppComponent.kt	(date 1540111690000)
+@@ -1,5 +1,6 @@
+ package com.truecaller.giveapp
+ 
++import com.truecaller.giveapp.model.FileStorage
+ import com.truecaller.giveapp.view.ItemListFragment
+ import dagger.Component
+ import javax.inject.Singleton
+@@ -8,4 +9,6 @@
+ @Component(modules = [AppModule::class])
+ interface AppComponent {
+     fun inject(fragment: ItemListFragment)
++
++    fun fileStorage(): FileStorage
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/GlideModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/GlideModule.kt	(date 1540112796000)
++++ app/src/main/java/com/truecaller/giveapp/GlideModule.kt	(date 1540112796000)
+@@ -0,0 +1,18 @@
++package com.truecaller.giveapp
++
++import android.content.Context
++import com.bumptech.glide.Glide
++import com.bumptech.glide.Registry
++import com.bumptech.glide.annotation.GlideModule
++import com.bumptech.glide.module.AppGlideModule
++import com.firebase.ui.storage.images.FirebaseImageLoader
++import com.google.firebase.storage.StorageReference
++import java.io.InputStream
++
++@GlideModule
++class GiveAppGlideModule : AppGlideModule() {
++
++    override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
++        registry.append(StorageReference::class.java, InputStream::class.java, FirebaseImageLoader.Factory())
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/presenter/ItemListPresenter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp.presenter\n\nimport com.truecaller.giveapp.model.Item\nimport com.truecaller.giveapp.model.ItemRepository\nimport com.truecaller.giveapp.view.ItemListView\nimport javax.inject.Inject\n\nclass ItemListPresenter @Inject constructor(\n    private val itemRepository: ItemRepository\n) : BasePresenter<ItemListView>(), OnItemLoadCallback {\n\n    fun loadItems() {\n        view?.showProgress(true)\n        itemRepository.loadItems(this)\n    }\n\n    override fun onItemListLoaded(itemList: List<Item>) {\n        view?.showProgress(false)\n        view?.showItemList(itemList)\n    }\n\n    override fun onItemEventError(errorMessage: String) {\n        view?.showProgress(false)\n        view?.showError(errorMessage)\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/presenter/ItemListPresenter.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/presenter/ItemListPresenter.kt	(date 1540109543000)
+@@ -1,13 +1,30 @@
+ package com.truecaller.giveapp.presenter
+ 
+-import com.truecaller.giveapp.model.Item
+-import com.truecaller.giveapp.model.ItemRepository
++import android.net.Uri
++import com.truecaller.giveapp.model.*
+ import com.truecaller.giveapp.view.ItemListView
+ import javax.inject.Inject
+ 
+ class ItemListPresenter @Inject constructor(
+-    private val itemRepository: ItemRepository
+-) : BasePresenter<ItemListView>(), OnItemLoadCallback {
++    private val itemRepository: ItemRepository,
++    private val fileStorage: FileStorage
++) : BasePresenter<ItemListView>(), OnItemLoadCallback, OnFileUploadCallback, OnItemAddCallback {
++    override fun onFileUploadError(errorMessage: String) {
++    }
++
++    override fun onFileUploaded(fileRef: String) {
++        val item = Item()
++        item.picture = fileRef
++        itemRepository.saveItem(item, this)
++    }
++
++    override fun onFileUploadProgress(progress: Double) {
++        view?.showError(progress.toString())
++    }
++
++    override fun onItemAdded() {
++        loadItems()
++    }
+ 
+     fun loadItems() {
+         view?.showProgress(true)
+@@ -23,4 +40,8 @@
+         view?.showProgress(false)
+         view?.showError(errorMessage)
+     }
++
++    fun uploadImage(uri: Uri) {
++        fileStorage.uploadFile(uri, this)
++    }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/truecaller/giveapp/AddActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.truecaller.giveapp\n\nimport android.os.Bundle\nimport android.support.v7.app.AppCompatActivity\nimport android.view.View\nimport android.widget.AdapterView\nimport android.widget.ArrayAdapter\nimport android.widget.Spinner\n\nclass AddActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {\n\n    var category: String = \"\"\n    private val listOfSpinnerItems =\n        arrayOf(\"Not sure\",\"Vegetables\", \"Fruits\", \"Breads\", \"Meat\", \"Juice\", \"Wine\", \"Beer\", \"Ice cream\", \"Candy\")\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContentView(R.layout.activity_add)\n        setUpCategorySpinner()\n    }\n\n    private fun setUpCategorySpinner() {\n        val spinner = findViewById<Spinner>(R.id.category_spinner)\n        spinner.onItemSelectedListener = this\n        val arrayAdapter = ArrayAdapter(\n            this,\n            android.R.layout.simple_spinner_item, listOfSpinnerItems\n        )\n        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)\n        spinner.adapter = arrayAdapter\n    }\n\n    override fun onNothingSelected(parent: AdapterView<*>?) {\n        TODO(\"not implemented\") //To change body of created functions use File | Settings | File Templates.\n    }\n\n    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {\n        category = listOfSpinnerItems[position]\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/truecaller/giveapp/AddActivity.kt	(revision 86ff76523eaa53e89bce9c38e6695e0dcc87f0f8)
++++ app/src/main/java/com/truecaller/giveapp/AddActivity.kt	(date 1540105696000)
+@@ -1,11 +1,18 @@
+ package com.truecaller.giveapp
+ 
++import android.app.Activity
++import android.content.Intent
++import android.net.Uri
+ import android.os.Bundle
+ import android.support.v7.app.AppCompatActivity
+ import android.view.View
+ import android.widget.AdapterView
+ import android.widget.ArrayAdapter
+ import android.widget.Spinner
++import kotlinx.android.synthetic.main.activity_add.*
++
++
++const val REQUEST_CODE_PHOTO_PICKER = 1
+ 
+ class AddActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+ 
+@@ -17,6 +24,23 @@
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_add)
+         setUpCategorySpinner()
++
++        camera.setOnClickListener {
++            val intent = Intent(Intent.ACTION_GET_CONTENT)
++            intent.type = "image/jpeg"
++            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
++            startActivityForResult(Intent.createChooser(intent, "Complete action using"), REQUEST_CODE_PHOTO_PICKER)
++        }
++    }
++
++    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
++        if(requestCode == REQUEST_CODE_PHOTO_PICKER && resultCode == Activity.RESULT_OK) {
++            val uri: Uri? = data?.data
++            uri?.let {
++
++            }
++        }
++        super.onActivityResult(requestCode, resultCode, data)
+     }
+ 
+     private fun setUpCategorySpinner() {
