@@ -10,6 +10,7 @@ class AddItemPresenter @Inject constructor(
 ) : BasePresenter<AddItemView>(), OnItemAddCallback {
     override fun onItemAdded() {
         view?.showProgress(false)
+        view?.finishActivity()
     }
 
     override fun onItemEventError(errorMessage: String) {

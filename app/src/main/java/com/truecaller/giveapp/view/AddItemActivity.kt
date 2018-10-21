@@ -8,13 +8,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import com.truecaller.giveapp.App
 import com.truecaller.giveapp.R
 import com.truecaller.giveapp.model.Item
 import com.truecaller.giveapp.presenter.AddItemPresenter
 import kotlinx.android.synthetic.main.activity_add_item.*
 import javax.inject.Inject
-
 
 class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, AddItemView {
 
@@ -61,12 +61,42 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.action_save -> {
-                val item = Item()
-                presenter.saveItem(item)
+                trySaveItem()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun trySaveItem() {
+        val title = itemTitle.text.toString()
+        val description = itemDescription.text.toString()
+        val phoneNumber = itemPhoneNumber.text.toString()
+
+        if (title.isBlank()) {
+            Toast.makeText(this, "Title cannot be empty!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (description.isBlank()) {
+            Toast.makeText(this, "Description cannot be empty!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (phoneNumber.isBlank()) {
+            Toast.makeText(this, "Phone number cannot be empty!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val item = Item()
+        item.category = category
+        item.title = title
+        item.description = description
+        item.address = itemLocation.text.toString()
+        item.phone = phoneNumber
+        item.email = itemEmail.text.toString()
+        item.lifetime = itemLifeTime.text.toString().toLong()
+        presenter.saveItem(item)
     }
 
     override fun onStop() {
@@ -80,5 +110,9 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         } else {
             View.GONE
         }
+    }
+
+    override fun finishActivity() {
+        finish()
     }
 }
