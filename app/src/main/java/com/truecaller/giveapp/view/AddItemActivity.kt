@@ -23,7 +23,7 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
 
     var category: String = ""
     private val listOfSpinnerItems =
-        arrayOf("Not sure", "Vegetables", "Fruits", "Breads", "Meat", "Juice", "Wine", "Beer", "Ice cream", "Candy")
+        arrayOf("Not sure", "Food", "Groceries", "Clothes", "Furniture")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         App.component.inject(this)
@@ -100,6 +100,7 @@ class AddItemActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         item.phone = phoneNumber
         item.email = itemEmail.text.toString()
         item.lifetime = itemLifeTime.text.toString().toLong()
+        item.creationTimestamp = System.currentTimeMillis()
         presenter.saveItem(item)
     }
 

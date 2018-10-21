@@ -50,21 +50,21 @@ class ItemDetailsFragment : Fragment() {
             collapsingToolbar.title = item.title
             tvItemCategory.text = item.category
             tvItemDescription.text = item.description
+
+            val lifetimePercentage = calculateItemLifetimePercentage(item.lifetime, item.creationTimestamp)
+            animateLifeTimeProgress(lifetimePercentage)
+
             fabCallOwner.setOnClickListener { context?.dialNumber(item.phone) }
         }
-
-        val lifetimePercentage = calculateItemLifetimePercentage()
-        animateLifeTimeProgress(lifetimePercentage)
     }
 
-    private fun calculateItemLifetimePercentage(): Int { //TODO Test values
-        val daysPassed: Long = calculateDaysPassed(1539508407000) //14.10.2018
-        val itemLifeTime = 10
-        return if (daysPassed > itemLifeTime) {
+    private fun calculateItemLifetimePercentage(lifeTime: Long, creationTimeStamp: Long): Int {
+        val daysPassed: Long = calculateDaysPassed(creationTimeStamp)
+        return if (daysPassed > lifeTime) {
             Toast.makeText(context, R.string.error_message_item_expired, Toast.LENGTH_SHORT).show()
             0
         } else {
-            val percentage = daysPassed.toDouble() / itemLifeTime * 100
+            val percentage = daysPassed.toDouble() / lifeTime * 100
             println("end percentage: $percentage")
             percentage.toInt()
         }
